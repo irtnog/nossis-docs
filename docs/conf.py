@@ -102,5 +102,6 @@ html_sidebars = {
     ]
 }
 
-# generate documentation for tagged releases only
-smv_branch_whitelist = None
+# generate documentation for tagged releases and feature branches
+smv_branch_whitelist = r"^(?!(gh-pages$|main$|master$|releases?(/.*)?$)).*$"
+smv_latest_version = f"v{release}"
