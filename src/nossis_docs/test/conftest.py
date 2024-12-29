@@ -20,6 +20,8 @@
 """Configure test fixtures (mocks)."""
 
 import os
+import random
+import string
 from datetime import UTC, datetime
 
 import boto3
@@ -30,15 +32,33 @@ from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 
 
 @pytest.fixture
-def _aws_credentials():
-    """Avoid mutating real AWS infrastructure."""
-    os.environ["AWS_ACCESS_KEY_ID"] = "testing"
-    os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
-    os.environ["AWS_SECURITY_TOKEN"] = "testing"
-    os.environ["AWS_SESSION_TOKEN"] = "testing"
-    os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
+def _aws_credentials(socket_disabled: None) -> None:
+    """Avoid mutating real AWS infrastructure by overwriting the
+    relevant process environment variables.
+
+    :param socket_disabled: Disables network access via pytest-socket.
+
+    """
+
+    for envvar in [
+        "AWS_ACCESS_KEY_ID",
+        "AWS_DEFAULT_REGION",
+        "AWS_REGION",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SECURITY_TOKEN",
+        "AWS_SESSION_TOKEN",
+    ]:
+        # A random string guarantees this never results in anything
+        # that could possibly be real.
+        os.environ[envvar] = "".join(random.sample(string.ascii_letters, 8))
+
+    # This can't overwrite $AWS_PROFILE with nonsense because botocore
+    # will try to load that configuration profile, so remove it from
+    # the process environment entirely.
+    if "AWS_PROFILE" in os.environ:
+        del os.environ["AWS_PROFILE"]
+
     os.environ["MOTO_ALLOW_NONEXISTENT_REGION"] = "True"
-    os.environ["AWS_DEFAULT_REGION"] = "antarctica"
 
 
 @pytest.fixture
