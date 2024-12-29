@@ -84,7 +84,11 @@ variable "gh_pages_branch" {
 }
 
 variable "git_repos" {
-  type = list(string)
+  description = <<-EOT
+    Publish the web content branches of these Git repositories (JSON
+    list of repository URLs).
+    EOT
+  type        = string
 }
 
 variable "hosted_zone_id" {
@@ -149,7 +153,10 @@ variable "stack_name" {
 }
 
 variable "tags_all" {
-  description = "Apply these AWS metadata tags to all resources."
+  description = <<-EOT
+    Apply these AWS metadata tags to all resources (JSON mapping tag
+    names to values).
+    EOT
   type        = string
   default     = "{}"
 }

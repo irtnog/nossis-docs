@@ -51,6 +51,8 @@ locals {
   fqdn = "${var.hostname}.${var.domain_name}"
 
   s3_origin_id = "${var.stack_name}-s3-origin"
+
+  git_repos = jsondecode(var.git_repos)
 }
 
 
@@ -469,7 +471,7 @@ resource "aws_iam_role_policy_attachment" "this" {
 # repository.
 resource "aws_codepipeline" "this" {
   for_each = {
-    for repo in var.git_repos : repo => {
+    for repo in local.git_repos : repo => {
       repo_id      = regex(".*/([^/]+)$", repo)[0]
       full_repo_id = regex(".*/([^/]+/[^/]+)$", repo)[0]
       dist_id      = [for dist in aws_cloudfront_distribution.this : dist.id][0]
