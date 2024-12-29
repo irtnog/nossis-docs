@@ -104,6 +104,10 @@ Valid commit types are:
 : changes to the build system or external dependencies
 
 {.glossary}
+`chore`
+: miscellaneous changes not covered by the other commit types
+
+{.glossary}
 `ci`
 : changes to the continuous integration/continuous delivery process,
   e.g., GitHub Actions
