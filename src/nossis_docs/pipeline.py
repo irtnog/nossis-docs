@@ -20,7 +20,7 @@
 """AWS Lambda actions for CodePipeline."""
 
 import logging
-from typing import Any, Dict, List
+from typing import List
 
 import boto3
 from aws_lambda_powertools.utilities.data_classes import (
@@ -42,9 +42,19 @@ codepipeline: CodePipelineClient = boto3.client("codepipeline")
 @event_source(data_class=CodePipelineJobEvent)
 def invalidate_distribution(
     event: CodePipelineJobEvent, context: LambdaContext
-) -> Dict[str, Any]:
+) -> None:
     """When triggered by CodePipeline, flush the given CloudFront
-    distribution's cache."""
+    distribution's cache.
+
+    :param event: A CodePipeline job event;
+        cf. https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html.
+    :param context: The execution context of the Lambda function.
+    :return: None as the Lambda function is invoked asynchronously and
+        updates the calling CodePipeline job's status directly;
+        cf. https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-return.
+
+    """  # noqa: B950
+
     try:
         # Parse the event data.
         params: dict = event.decoded_user_parameters
