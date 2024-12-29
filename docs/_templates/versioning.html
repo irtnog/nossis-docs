@@ -1,0 +1,50 @@
+{#- nossis-docs, serverless hosting for static, private web sites that
+    works like GitHub Pages
+
+    Copyright (C) 2024  Matthew X. Economou
+
+    This program is free software: you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public
+    License along with this program.  If not, see
+    <https://www.gnu.org/licenses/>. -#}
+{% if versions %}
+<style type="text/css">
+  ul.version_list { padding-left: 0; }
+  ul.version_list li.version_item { display: inline; }
+  li.version_item a {
+    color: white;
+    background-color: #097aba;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0.35rem;
+  }
+  li.version_item a:hover {
+    background-color: #064061;
+    text-decoration: none;
+  }
+  li.version_item.current_version {
+    color: white;
+    background-color: #064061;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0.35rem;
+  }
+</style>
+<h3>{{ _('Versions') }}</h3>
+<ul class="version_list">
+  {%- for item in versions|reverse %}
+    {% if item.name != current_version.name %}
+      <li class="version_item"><a href="{{ item.url }}">{{ item.name }}</a></li>
+    {% else %}
+      <li class="version_item current_version">{{ item.name }}</li>
+    {% endif %}
+  {%- endfor %}
+</ul>
+{% endif %}
