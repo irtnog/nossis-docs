@@ -193,10 +193,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-
-      # Set up the testing environment.
       - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
-        run: pip install -e ".[test]"
+        run: |
+          pip install -r requirements.txt
+          pip install -e ".[test]"
 
       # Run the test suite and generate a code coverage report.
       - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
