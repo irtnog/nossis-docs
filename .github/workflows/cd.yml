@@ -1,0 +1,118 @@
+# nossis-docs, serverless hosting for static, private web sites that
+# works like GitHub Pages
+#
+# Copyright (C) 2024  Matthew X. Economou
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public
+# License along with this program.  If not, see
+# <https://www.gnu.org/licenses/>.
+
+---
+name: Continuous Delivery
+
+# On feature branches, trigger this workflow manually.  On the main or
+# release branches, trigger it automatically.  (Note that runs
+# triggered by the workflow_run event always use the default branch
+# for the repository.)
+on:
+  workflow_dispatch:
+  workflow_run:
+    branches:
+      - main
+      - releases/*
+    workflows:
+      - Continuous Integration
+    types:
+      - completed
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the job permission to log into AWS using the GitHub OIDC
+      # OpenID provider.  Remember to limit which repository branches
+      # or environments can assume which IAM roles.
+      id-token: write
+
+      # Give the job permission to download releases.
+      contents: read
+    steps:
+      # Use the same hardware architecture and the same Python version
+      # as the Lambda functions' runtimes.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # On feature branches, deploy from source to the staging
+      # environment.  Mimic just enough of the release process to
+      # create similar deployment artifacts.
+      - if: (github.ref != 'main') && !startsWith('releases/', github.ref)
+        uses: actions/checkout@v4
+      - if: (github.ref != 'main') && !startsWith('releases/', github.ref)
+        run: |
+          pip install build pip-tools
+          pip-compile -o requirements.txt pyproject.toml
+          python -m build
+          mv dist/*.whl .
+
+      # On the main or release branches, deploy to production from the
+      # latest release.
+      - if: (github.ref == 'main') || startsWith('releases/', github.ref)
+        uses: robinraju/release-downloader@v1
+        with:
+          latest: true
+          fileName: '*'
+          tarBall: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - if: (github.ref == 'main') || startsWith('releases/', github.ref)
+        run: |
+          tar -xz --strip-components=1 -f ./*.tar.gz
+          mv terraform.lock.hcl .terraform.lock.hcl
+
+      # Build the deployment package.
+      - run: |
+          echo file://localhost$(pwd)/$(echo *.whl) >> requirements.txt
+          pip install --no-compile --target lambda-functions -r requirements.txt
+          find lambda-functions -exec touch -t 197001010000.00 '{}' \;
+          cd lambda-functions && zip -X -r ../lambda-functions.zip .
+
+      # Configure the stack.
+      - uses: easyware-io/export-to-env@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          vars: ${{ toJSON(vars) }}
+          only: TF_*
+      - id: configure-tf-backend
+        run: printf "${TF_BACKEND}" | tee backend.tf
+
+      # Log into AWS.
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.IAM_ROLE_TO_ASSUME || null }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID || null }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY || null }}
+          role-skip-session-tagging: true
+
+      # Initialize OpenTofu and deploy the stack.
+      - uses: opentofu/setup-opentofu@v1.0.2
+      - run: tofu init
+      - run: tofu validate -no-color
+      - id: plan
+        run: tofu plan -out terraform.tfplan -detailed-exitcode -no-color
+      - if: steps.plan.outputs.exitcode == 2
+        run: tofu apply -auto-approve -no-color terraform.tfplan
