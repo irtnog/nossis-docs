@@ -180,8 +180,7 @@ venv .venv:
 # Remove build artifacts and reset the development environment.
 clean:
 	rm -rf build .coverage dist .pytest_cache .venv* docs/apidocs \
-		docs/_locales/en .terraform* backend.tf terraform.tfvars \
-		$(PRE_COMMIT_HOOKS)
+		docs/_locales/en .terraform* $(PRE_COMMIT_HOOKS)
 	find . -type d -name __pycache__ -print | xargs rm -rf
 	find . -type d -name \*.egg-info -print | xargs rm -rf
 

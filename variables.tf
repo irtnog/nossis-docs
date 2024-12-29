@@ -17,7 +17,7 @@
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
 
-variable "cert_dcv_method" {
+variable "CERT_DCV_METHOD" {
   description = <<-EOT
     (Optional) When requesting a new service certificate, use DNS
     record- or confirmation email-based domain control validation
@@ -34,12 +34,12 @@ variable "cert_dcv_method" {
   default     = "DNS"
 
   validation {
-    condition     = contains(["DNS", "EMAIL"], var.cert_dcv_method)
+    condition     = contains(["DNS", "EMAIL"], var.CERT_DCV_METHOD)
     error_message = "Unsupported domain control validation method"
   }
 }
 
-variable "certificate_arn" {
+variable "CERTIFICATE_ARN" {
   description = <<-EOT
     (Optional) The stack will use this certificate in AWS Certificate
     Manager (ACM).  If left blank, the stack will request a new ACM
@@ -49,7 +49,7 @@ variable "certificate_arn" {
   default     = ""
 }
 
-variable "cloudfront_price_class" {
+variable "CLOUDFRONT_PRICE_CLASS" {
   description = <<-EOT
     Select a CloudFront price class that matches the audience's
     location.
@@ -60,13 +60,13 @@ variable "cloudfront_price_class" {
   validation {
     condition = contains(
       ["PriceClass_100", "PriceClass_200", "PriceClass_All"],
-      var.cloudfront_price_class,
+      var.CLOUDFRONT_PRICE_CLASS,
     )
     error_message = "Unsupported CloudFront price class"
   }
 }
 
-variable "domain_name" {
+variable "DOMAIN_NAME" {
   description = <<-EOT
     The domain name of the service, e.g., for \"docs.example.com\",
     the domain name would be \"example.com\".
@@ -74,7 +74,7 @@ variable "domain_name" {
   type        = string
 }
 
-variable "gh_pages_branch" {
+variable "GH_PAGES_BRANCH" {
   description = <<-EOT
     Publish web content from this branch of the specified Git
     repositories.
@@ -83,7 +83,7 @@ variable "gh_pages_branch" {
   default     = "gh-pages"
 }
 
-variable "git_repos" {
+variable "GIT_REPOS" {
   description = <<-EOT
     Publish the web content branches of these Git repositories (JSON
     list of repository URLs).
@@ -91,7 +91,7 @@ variable "git_repos" {
   type        = string
 }
 
-variable "hosted_zone_id" {
+variable "HOSTED_ZONE_ID" {
   description = <<-EOF
     (Optional) If specified, the stack will create resource records
     for the service in this Route 53 hosted zone.  Note that the Route
@@ -102,7 +102,7 @@ variable "hosted_zone_id" {
   default     = ""
 }
 
-variable "hostname" {
+variable "HOSTNAME" {
   description = <<-EOT
     The short name of the service, e.g., for \"docs.example.com\", the
     hostname would be \"docs\".
@@ -110,18 +110,18 @@ variable "hostname" {
   type        = string
 }
 
-variable "lambda_arch" {
+variable "LAMBDA_ARCH" {
   type        = string
   default     = "arm64"
   description = "Deploy Lambda functions on the selected hardware architecture."
 
   validation {
-    condition     = contains(["arm64", "x86_64"], var.lambda_arch)
+    condition     = contains(["arm64", "x86_64"], var.LAMBDA_ARCH)
     error_message = "Unsupported hardware architecture specified."
   }
 }
 
-variable "s3_encryption_key_arn" {
+variable "S3_ENCRYPTION_KEY_ARN" {
   description = <<-EOT
     (Optional; SSE-KMS only) The stack will use this symmetric KMS
     master key to encrypt S3 storage instead of the default.
@@ -131,7 +131,7 @@ variable "s3_encryption_key_arn" {
   default = null
 }
 
-variable "s3_server_side_encryption" {
+variable "S3_SERVER_SIDE_ENCRYPTION" {
   description = <<-EOT
     (Optional) The stack will encrypt S3-backed storage with a key of
     this type.  SSE-KMS costs more but enables key usage auditing and
@@ -141,18 +141,18 @@ variable "s3_server_side_encryption" {
   default     = "SSE-S3"
 
   validation {
-    condition     = contains(["SSE-KMS", "SSE-S3"], var.s3_server_side_encryption)
+    condition     = contains(["SSE-KMS", "SSE-S3"], var.S3_SERVER_SIDE_ENCRYPTION)
     error_message = "Unsupported S3 storage encryption method"
   }
 }
 
-variable "stack_name" {
+variable "STACK_NAME" {
   description = "Give this service a unique name."
   type        = string
   nullable    = false
 }
 
-variable "tags_all" {
+variable "TAGS_ALL" {
   description = <<-EOT
     Apply these AWS metadata tags to all resources (JSON mapping tag
     names to values).
