@@ -18,7 +18,8 @@
 # <https://www.gnu.org/licenses/>.
 
 repos:
-  # Ensure commit messages use Conventional Commits formatting.
+  # Ensure commit messages use Conventional Commits formatting;
+  # see also .commitlintrc.js.
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.18.0
     hooks:
