@@ -67,7 +67,16 @@ repos:
       - id: black
 
 
-  # Lint/reformat Terraform code.
+  # Lint/reformat the OpenTofu module.  Note that deployment artifacts
+  # must exist for this to work, so create placeholders (and clean up
+  # after) if those artifacts are missing.
+  - repo: local
+    hooks:
+      - id: mock-artifacts-generate
+        name: Mock up OpenTofu deployment artifacts
+        entry: .mock-artifacts-generate.sh
+        language: script
+        pass_filenames: false
   - repo: https://github.com/tofuutils/pre-commit-opentofu
     rev: v2.1.0
     hooks:
@@ -79,3 +88,10 @@ repos:
       # - id: tofu_trivy
       # - id: terrascan
       # - id: infracost_breakdown
+  - repo: local
+    hooks:
+      - id: mock-artifacts-cleanup
+        name: Remove mock OpenTofu deployment artifacts
+        entry: .mock-artifacts-cleanup.sh
+        language: script
+        pass_filenames: false

@@ -89,9 +89,6 @@ jobs:
       - uses: terraform-linters/setup-tflint@v4
       - uses: aquasecurity/setup-trivy@v0.2.0
 
-      # Create a dummy package for validation purposes.
-      - run: touch lambda-functions.zip
-
       # Double-check code syntax/style.  This ought to happen in a
       # pre-commit hook, but not everyone may have that installed.
       - uses: pre-commit/action@v3.0.1
