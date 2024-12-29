@@ -62,15 +62,27 @@ def _aws_credentials(socket_disabled: None) -> None:
 
 
 @pytest.fixture
-def cloudfront(_aws_credentials) -> CloudFrontClient:
-    """Mock up a CloudFront client."""
+def cloudfront(_aws_credentials: None) -> CloudFrontClient:
+    """Mock up a CloudFront client.
+
+    :param _aws_credentials: Blocks access to real AWS resources.
+    :return: A CloudFront client connected to a mock AWS account.
+
+    """
+
     with mock_aws():
         yield boto3.client("cloudfront")
 
 
 @pytest.fixture
 def mock_distribution(cloudfront: CloudFrontClient) -> CreateDistributionResultTypeDef:
-    """Mock up a CloudFront distribution."""
+    """Mock up a CloudFront distribution.
+
+    :param cloudfront: A CloudFront client connected to a mock AWS
+        account.
+    :return: Information about the CloudFront distribution.
+
+    """
 
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloudfront/client/create_distribution.html
     return cloudfront.create_distribution(

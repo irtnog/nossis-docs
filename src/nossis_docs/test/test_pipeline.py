@@ -28,15 +28,21 @@ from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 
 
 @pytest.mark.smoke
-@pytest.mark.disable_socket
-def test_invalidate_distribution(mock_distribution: CreateDistributionResultTypeDef):
+def test_invalidate_distribution(
+    mock_distribution: CreateDistributionResultTypeDef,
+) -> None:
     """Simulate a CodePipeline deploy stage signaling Lambda to
-    invalidate paths in a CloudFront distribution."""
+    invalidate paths in a CloudFront distribution.
 
-    # Import the code to be tested here to ensure mocks are set up
-    # _BEFORE_ their boto3 clients gets created.  Otherwise they may
-    # not use the mock AWS credentials and could potentially alter
-    # real infrastructure.
+    :param mock_distribution: The target CloudFront distribution.
+
+    """
+
+    # To ensure AWS test fixtures get set up BEFORE creating any boto3
+    # clients, import the code to be tested at the function level
+    # (i.e., here), not at the module level (above).  Otherwise, those
+    # boto3 clients may not use the test fixtures and could
+    # potentially alter real AWS infrastructure.
     from nossis_docs.pipeline import invalidate_distribution
 
     # https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html#action-reference-Lambda-event
@@ -92,12 +98,21 @@ def test_invalidate_distribution(mock_distribution: CreateDistributionResultType
     )
     context = LambdaContext()
 
-    # Moto hasn't implemented CloudFront's PutJobFailureResult or
+    # Moto hasn't implemented CloudFront's PutJobFailureResult and
     # PutJobSuccessResult API calls, so patch them here.
     orig_make_api_call = BaseClient._make_api_call
 
-    def mock_make_api_call(self: BaseClient, operation_name: str, kwarg):
-        """Intercept calls to PutJobFailureResult and PutJobSuccessResult."""
+    def mock_make_api_call(self: BaseClient, operation_name: str, api_params):
+        """Intercept calls to PutJobFailureResult and
+        PutJobSuccessResult.
+
+        :param self: An instance of botocore's AWS API client.
+        :param operation_name: The API being called.
+        :param api_params: Any parameters.
+        :return: The result of the API call.
+
+        """
+
         match operation_name:
             # https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobFailureResult.html
             case "PutJobFailureResult":
@@ -105,9 +120,12 @@ def test_invalidate_distribution(mock_distribution: CreateDistributionResultType
                 return
             # https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobSuccessResult.html
             case "PutJobSuccessResult":
-                assert kwarg["jobId"] == job_id
+                assert api_params["jobId"] == job_id
                 return
-        return orig_make_api_call(self, operation_name, kwarg)
+
+        # Fall through to the original _make_api_call function (well,
+        # not the ORIGINAL original---Moto's patched version).
+        return orig_make_api_call(self, operation_name, api_params)
 
     with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
         invalidate_distribution(event, context)

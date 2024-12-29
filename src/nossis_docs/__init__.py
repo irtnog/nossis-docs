@@ -17,6 +17,8 @@
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
 
+"""Initialize the module and export top-level public interfaces."""
+
 import logging
 from importlib.metadata import version
 
