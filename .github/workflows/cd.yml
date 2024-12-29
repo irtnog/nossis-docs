@@ -97,7 +97,7 @@ jobs:
           vars: ${{ toJSON(vars) }}
           only: TF_*
       - id: configure-tf-backend
-        run: printf "${TF_BACKEND}" | tee backend.tf
+        run: printf "${TF_BACKEND}" | tee backend_override.tf
 
       # Log into AWS.
       - uses: aws-actions/configure-aws-credentials@v4

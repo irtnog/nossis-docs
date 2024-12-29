@@ -24,10 +24,6 @@ docs/apidocs/
 # created/updated by the CI/CD pipeline
 .terraform.lock.hcl
 
-# Terraform/OpenTofu state storage back end configuration, generated
-# from a template by the CI/CD pipeline
-backend.tf
-
 # Additional build artifacts
 *.zip
 
