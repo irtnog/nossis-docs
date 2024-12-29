@@ -58,8 +58,8 @@ jobs:
           python-version: '3.12'
 
       # On feature branches, deploy from source to the staging
-      # environment.  Mimic just enough of the release process to
-      # create similar deployment artifacts.
+      # environment.  If necessary, mimic just enough of the release
+      # process to create similar build artifacts.
       - if: (github.ref != 'main') && !startsWith('releases/', github.ref)
         uses: actions/checkout@v4
       - if: (github.ref != 'main') && !startsWith('releases/', github.ref)
@@ -83,7 +83,7 @@ jobs:
           tar -xz --strip-components=1 -f ./*.tar.gz
           mv terraform.lock.hcl .terraform.lock.hcl
 
-      # Build the deployment package.
+      # If necessary, create the deployment package.
       - run: |
           echo "file://localhost$(pwd)/$(echo *.whl)" >> requirements.txt
           pip install --no-compile --target lambda-functions -r requirements.txt
