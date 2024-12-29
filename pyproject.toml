@@ -29,7 +29,7 @@ description = "Serverless hosting for static, private web sites that works like 
 version = "0.0.0"
 # cf. https://www.bitecode.dev/p/relieving-your-python-packaging-pain,
 # https://devguide.python.org/versions/
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 # cf. https://pypi.org/classifiers/
 classifiers = [
     "Development Status :: 1 - Planning",
@@ -42,6 +42,9 @@ classifiers = [
 # constraints to address capability, compatibility, or security
 # issues, and avoid pinning specific versions if possible.
 dependencies = [
+    "aws-lambda-powertools",
+    "boto3",
+    "boto3-stubs[cloudfront,codepipeline]",
 ]
 
 [project.license]
@@ -51,6 +54,7 @@ file = "LICENSE"
 dev = [
     "autopep8",
     "black",
+    "boto3-stubs[all]",
     "build",
     "flake8-bugbear",
     "flake8-pytest-style",
@@ -70,11 +74,13 @@ dev = [
     "yq",
 ]
 test = [
+    "moto[all]",
     "pytest",
     "pytest-cov",
     "pytest-emoji",
     "pytest-md",
     "pytest-order",
+    "pytest-socket",
     "pytest-reportlog",
 ]
 

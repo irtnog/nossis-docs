@@ -71,7 +71,16 @@ jobs:
           key: workdir-${{ github.sha }}
           path: .
 
-      # Install linter dependencies here; for example:
+      # Use the oldest supported version of Python when linting to
+      # catch forward compatibility issues.  Keep this in sync with
+      # the freeze, test-matrix, build-matrix, and docs jobs;
+      # cf. https://devguide.python.org/versions/.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      # Install additional linter dependencies here.
       - uses: opentofu/setup-opentofu@v1.0.2
       - run: |
           curl -sL https://terraform-docs.io/dl/v0.19.0/terraform-docs-v0.19.0-Linux-amd64.tar.gz \
@@ -79,6 +88,9 @@ jobs:
       - run: pip install checkov
       - uses: terraform-linters/setup-tflint@v4
       - uses: aquasecurity/setup-trivy@v0.2.0
+
+      # Create a dummy package for validation purposes.
+      - run: touch lambda-functions.zip
 
       # Double-check code syntax/style.  This ought to happen in a
       # pre-commit hook, but not everyone may have that installed.
@@ -103,7 +115,7 @@ jobs:
           lookup-only: true
           path: |
             requirements.txt
-            .terraform.lock.hcl
+            terraform.lock.hcl
       - if: steps.cache-requirements.outputs.cache-hit != 'true'
         uses: actions/cache/restore@v4
         with:
@@ -112,12 +124,12 @@ jobs:
 
       # Use the oldest supported version of Python when generating
       # dependency pins to catch forward compatibility issues.  Keep
-      # this in sync with the test-matrix and build-matrix jobs; cf.
-      # https://devguide.python.org/versions/.
+      # this in sync with the lint, test-matrix, build-matrix, and
+      # docs jobs; cf. https://devguide.python.org/versions/.
       - if: steps.cache-requirements.outputs.cache-hit != 'true'
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
           cache: pip
       - if: steps.cache-requirements.outputs.cache-hit != 'true'
         id: setup-pip-tools
@@ -134,7 +146,9 @@ jobs:
         run: pip-compile -o requirements.txt pyproject.toml
       - if: steps.cache-requirements.outputs.cache-hit != 'true'
         id: freeze-deps-opentofu
-        run: tofu providers lock
+        run: |
+          tofu providers lock
+          mv .terraform.lock.hcl terraform.lock.hcl
 
 
   test-matrix:
@@ -143,13 +157,14 @@ jobs:
       - freeze
     runs-on: ubuntu-latest
     strategy:
-      # Keep this in sync with the freeze and build-matrix jobs; cf.
-      # https://devguide.python.org/versions/.
+      # Test across supported Python versions.  Keep this in sync with
+      # the lint, freeze, build-matrix, and docs jobs;
+      # cf. https://devguide.python.org/versions/.
       matrix:
         python-version:
-          - '3.10'
           - '3.11'
           - '3.12'
+          - '3.13'
     steps:
       # Tests take a long time to run, so only re-run them when (1)
       # they fail or (2) when the source code changes.  This step
@@ -187,12 +202,10 @@ jobs:
         run: pip install -e ".[test]"
 
       # Run the test suite and generate a code coverage report.
-      # - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
-      #   uses: pavelzw/pytest-action@v2
-      #   with:
-      #     custom-arguments: --cov=nossis_docs --report-log=pytest.out
       - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
-        run: touch pytest.out
+        uses: pavelzw/pytest-action@v2
+        with:
+          custom-arguments: --cov=nossis_docs --report-log=pytest.out
 
 
   release:
@@ -212,10 +225,6 @@ jobs:
     steps:
       - uses: actions/cache/restore@v4
         with:
-          key: requirements-${{ needs.setup.outputs.source-hash }}
-          path: requirements.txt
-      - uses: actions/cache/restore@v4
-        with:
           key: workdir-${{ github.sha }}
           path: .
       - id: release
@@ -226,6 +235,12 @@ jobs:
 
       # The build process might download and run third-party code, so
       # pass the now release-ready source code to an unprivileged job.
+      - uses: actions/cache/restore@v4
+        with:
+          key: requirements-${{ needs.setup.outputs.source-hash }}
+          path: |
+            requirements.txt
+            terraform.lock.hcl
       - uses: actions/cache/save@v4
         with:
           key: release-${{ github.sha }}
@@ -241,12 +256,12 @@ jobs:
     if: needs.release.outputs.released == 'true'
     strategy:
       # Use the oldest supported version of Python when building pure
-      # Python packages.  Otherwise, keep this in sync with the freeze
-      # and test-matrix jobs; cf.
-      # https://devguide.python.org/versions/.
+      # Python packages.  Keep this in sync with the lint, freeze,
+      # test-matrix, and docs jobs;
+      # cf. https://devguide.python.org/versions/.
       matrix:
         python-version:
-          - '3.10'
+          - '3.11'
     runs-on: ubuntu-latest
     steps:
       # Build the distribution.
@@ -295,8 +310,14 @@ jobs:
         with:
           key: release-${{ github.sha }}
           path: .
+
+      # Use the oldest supported version of Python when generating
+      # documentation to catch forward compatibility issues.  Keep
+      # this in sync with the lint, freeze, test-matrix, and
+      # build-matrix jobs; cf. https://devguide.python.org/versions/.
       - uses: actions/setup-python@v5
         with:
+          python-version: '3.11'
           cache: pip
 
       # Generate hypertext and print media.
@@ -369,8 +390,8 @@ jobs:
 
       # Third parties should be able to build and deploy the exact
       # same distribution for verification purposes.
-      - run: cp requirements*.txt dist/
-      - run: cp .terraform.lock.hcl dist/
+      - run: |
+          cp requirements*.txt terraform.lock.hcl dist/
 
       # Publish built distributions and documentation on GitHub.
       - uses: python-semantic-release/upload-to-gh-release@main

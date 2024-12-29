@@ -132,7 +132,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 }
 
 
-# Give CloudFront permission to access s3.
+# Give CloudFront permission to access S3.
 resource "aws_cloudfront_origin_access_identity" "this" {}
 
 data "aws_iam_policy_document" "allow_access_from_cloudfront" {
@@ -301,8 +301,95 @@ resource "aws_codestarconnections_connection" "github" {
 }
 
 
-# Give pipelines access to artifact storage, web site storage, and
-# code repository connections.
+# Pre-create the log group for the following Lambda function.  This
+# uses the AWS naming convention for the log group name following the
+# principle of least astonishment.  As this log only really exists for
+# diagnostic purposes, limit log retention to 3 days.
+resource "aws_cloudwatch_log_group" "invalidate_distribution" {
+  name              = "/aws/lambda/${var.stack_name}-invalidate-distribution"
+  retention_in_days = 3
+}
+
+
+# Deploy a helper function in Lambda that invalidates the CloudFront
+# distribution's cache after CodePipeline updates the web site
+# storage.
+data "aws_iam_policy_document" "lambda_trust" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.${data.aws_partition.current.dns_suffix}"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "invalidate_distribution" {
+  name               = "${var.stack_name}-invalidate-distribution"
+  assume_role_policy = data.aws_iam_policy_document.lambda_trust.json
+}
+
+resource "aws_lambda_function" "invalidate_distribution" {
+  function_name    = "${var.stack_name}-invalidate-distribution"
+  role             = aws_iam_role.invalidate_distribution.arn
+  filename         = "lambda-functions.zip"
+  source_code_hash = filebase64sha256("lambda-functions.zip")
+  handler          = "nossis_docs.pipeline.invalidate_distribution"
+  runtime          = "python3.12"
+  architectures    = [var.lambda_arch]
+
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.invalidate_distribution.name
+    log_format = "JSON"
+  }
+}
+
+
+# Allow the helper function permission to invalidate cached content in
+# the CloudFront distribution and then report back to its caller.
+data "aws_iam_policy_document" "invalidate_distribution" {
+  # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazoncloudwatchlogs.html
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["${aws_cloudwatch_log_group.invalidate_distribution.arn}:log-stream:*"]
+  }
+
+  # https://docs.aws.amazon.com/service-authorization/latest/reference/list_awscodepipeline.html
+  statement {
+    effect = "Allow"
+    actions = [
+      "codepipeline:PutJobFailureResult",
+      "codepipeline:PutJobSuccessResult",
+    ]
+    resources = ["*"]
+  }
+
+  # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazoncloudfront.html
+  statement {
+    effect    = "Allow"
+    actions   = ["cloudfront:CreateInvalidation"]
+    resources = [for dist in aws_cloudfront_distribution.this : dist.arn]
+  }
+}
+
+resource "aws_iam_policy" "invalidate_distribution" {
+  name   = "${var.stack_name}-invalidate-distribution"
+  policy = data.aws_iam_policy_document.invalidate_distribution.json
+}
+
+resource "aws_iam_role_policy_attachment" "invalidate_distribution" {
+  role       = aws_iam_role.invalidate_distribution.name
+  policy_arn = aws_iam_policy.invalidate_distribution.arn
+}
+
+
+# Give pipelines access to artifact storage, web site storage, code
+# repository connections, and helper functions.
 data "aws_iam_policy_document" "codepipeline_trust" {
   statement {
     effect = "Allow"
@@ -345,9 +432,7 @@ data "aws_iam_policy_document" "this" {
         "kms:Decrypt",
         "kms:Encrypt",
       ]
-      resources = [
-        var.s3_encryption_key_arn,
-      ]
+      resources = [var.s3_encryption_key_arn]
     }
   }
 
@@ -360,9 +445,13 @@ data "aws_iam_policy_document" "this" {
       "codeconnections:UseConnection",
       "codestar-connections:UseConnection",
     ]
-    resources = [
-      aws_codestarconnections_connection.github.arn,
-    ]
+    resources = [aws_codestarconnections_connection.github.arn]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = [aws_lambda_function.invalidate_distribution.arn]
   }
 }
 
@@ -383,6 +472,7 @@ resource "aws_codepipeline" "this" {
     for repo in var.git_repos : repo => {
       repo_id      = regex(".*/([^/]+)$", repo)[0]
       full_repo_id = regex(".*/([^/]+/[^/]+)$", repo)[0]
+      dist_id      = [for dist in aws_cloudfront_distribution.this : dist.id][0]
     }
   }
 
@@ -441,6 +531,27 @@ resource "aws_codepipeline" "this" {
         Extract             = true
         ObjectKey           = each.value.repo_id
         KMSEncryptionKeyARN = local.with_s3_sse_kms ? var.s3_encryption_key_arn : null
+      }
+    }
+  }
+
+  stage {
+    name = "Invalidate"
+
+    # https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html
+    action {
+      name     = "Invalidate"
+      category = "Invoke"
+      owner    = "AWS"
+      provider = "Lambda"
+      version  = "1"
+
+      configuration = {
+        FunctionName = aws_lambda_function.invalidate_distribution.function_name
+        UserParameters = jsonencode({
+          "distribution_id" = each.value.dist_id
+          "object_paths"    = ["/${each.value.repo_id}/*"]
+        })
       }
     }
   }

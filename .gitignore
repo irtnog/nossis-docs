@@ -28,6 +28,9 @@ docs/apidocs/
 # from a template by the CI/CD pipeline
 backend.tf
 
+# Additional build artifacts
+*.zip
+
 ### Python (https://github.com/github/gitignore)
 
 # Byte-compiled / optimized / DLL files

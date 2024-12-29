@@ -63,8 +63,8 @@ $(shell $(TOMLQ) -r '.tool.setuptools."package-dir"|keys[0]' pyproject.toml)
 
 # Recursively list code, content, and test articles (as well as
 # related work in progress).
-SOURCEISH=$(or $(shell git ls-tree --full-tree --name-only -r HEAD src tests))
-UNTRACKED=$(or $(shell git ls-files --others --exclude-standard src tests))
+SOURCEISH ?= $(or $(shell git ls-tree --full-tree --name-only -r HEAD src))
+UNTRACKED ?= $(or $(shell git ls-files --others --exclude-standard src))
 
 
 # Enumerate translation targets.
@@ -98,12 +98,23 @@ $(addprefix .git/hooks/, \
 	lint \
 	locale \
 	locales \
+	package \
 	pre-commit \
 	setup \
 	smoke \
 	test \
 	tests \
 	venv \
+
+
+# Package the Lambda functions for deployment by OpenTofu.
+package: lambda-functions.zip
+lambda-functions.zip: .coverage
+	rm -rf lambda-functions
+	. .venv/bin/activate; python -m pip install --no-compile --target lambda-functions .
+	find lambda-functions -exec touch -t 197001010000.00 '{}' \;
+	cd lambda-functions && zip -X -r ../lambda-functions.zip .
+	rm -rf lambda-functions
 
 
 # Build the distribution.

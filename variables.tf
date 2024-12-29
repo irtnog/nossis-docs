@@ -106,6 +106,17 @@ variable "hostname" {
   type        = string
 }
 
+variable "lambda_arch" {
+  type        = string
+  default     = "arm64"
+  description = "Deploy Lambda functions on the selected hardware architecture."
+
+  validation {
+    condition     = contains(["arm64", "x86_64"], var.lambda_arch)
+    error_message = "Unsupported hardware architecture specified."
+  }
+}
+
 variable "s3_encryption_key_arn" {
   description = <<-EOT
     (Optional; SSE-KMS only) The stack will use this symmetric KMS
