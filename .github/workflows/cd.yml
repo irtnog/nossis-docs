@@ -85,7 +85,7 @@ jobs:
 
       # Build the deployment package.
       - run: |
-          echo file://localhost$(pwd)/$(echo *.whl) >> requirements.txt
+          echo "file://localhost$(pwd)/$(echo *.whl)" >> requirements.txt
           pip install --no-compile --target lambda-functions -r requirements.txt
           find lambda-functions -exec touch -t 197001010000.00 '{}' \;
           cd lambda-functions && zip -X -r ../lambda-functions.zip .
@@ -97,7 +97,7 @@ jobs:
           vars: ${{ toJSON(vars) }}
           only: TF_*
       - id: configure-tf-backend
-        run: printf "${TF_BACKEND}" | tee backend_override.tf
+        run: printf "%s" "${TF_BACKEND}" | tee backend_override.tf
 
       # Log into AWS.
       - uses: aws-actions/configure-aws-credentials@v4
