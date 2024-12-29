@@ -24,6 +24,10 @@ docs/apidocs/
 # created/updated by the CI/CD pipeline
 .terraform.lock.hcl
 
+# GitHub Actions runner secrets and variables
+.secrets
+.vars
+
 # Additional build artifacts
 *.zip
 
