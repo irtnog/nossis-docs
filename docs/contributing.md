@@ -31,7 +31,7 @@ Changes must include updated functional and integration tests.
 
 ## Development Environment
 
-This project requires Python 3.10 and OpenTofu 1.8 (or newer).  To set
+This project requires Python 3.11 and OpenTofu 1.8 (or newer).  To set
 up your development environment on Linux or macOS, run these
 [GNU Make](https://www.gnu.org/software/make/) commands from the
 project root directory.
@@ -138,5 +138,8 @@ Valid commit types are:
 
 Do not specify a scope for changes covering multiple scopes or for
 changes not specific to one scope.  Otherwise, a commit's scope should
-be the second-level OpenTofu module name sans the top-level prefix or
-any suffixes.
+be the second-level OpenTofu or Python module name sans the top-level
+prefix or any suffixes.  For top-level
+[dunder](https://wiki.python.org/moin/DunderAlias) modules, use their
+names sans the double underscores as the scope, e.g., `init` for
+`__init__.py`.
