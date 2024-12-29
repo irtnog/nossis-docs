@@ -74,14 +74,15 @@ dev = [
     "yq",
 ]
 test = [
+    "faker",
     "moto[all]",
     "pytest",
     "pytest-cov",
     "pytest-emoji",
     "pytest-md",
     "pytest-order",
-    "pytest-socket",
     "pytest-reportlog",
+    "pytest-socket",
 ]
 
 [project.readme]

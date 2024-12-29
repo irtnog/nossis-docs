@@ -29,12 +29,12 @@ from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 
 @pytest.mark.smoke
 def test_invalidate_distribution(
-    mock_distribution: CreateDistributionResultTypeDef,
+    distribution: CreateDistributionResultTypeDef,
 ) -> None:
     """Simulate a CodePipeline deploy stage signaling Lambda to
     invalidate paths in a CloudFront distribution.
 
-    :param mock_distribution: The target CloudFront distribution.
+    :param distribution: A mock CloudFront distribution.
 
     """
 
@@ -47,7 +47,7 @@ def test_invalidate_distribution(
 
     # https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html#action-reference-Lambda-event
     event = CodePipelineJobEvent(
-        data={
+        {
             "CodePipeline.job": {
                 "id": (job_id := "11111111-abcd-1111-abcd-111111abcdef"),
                 "accountId": "111111111111",
@@ -57,9 +57,9 @@ def test_invalidate_distribution(
                             "FunctionName": "MyLambdaFunction",
                             "UserParameters": json.dumps(
                                 {
-                                    "distribution_id": mock_distribution[
-                                        "Distribution"
-                                    ]["Id"],
+                                    "distribution_id": distribution["Distribution"][
+                                        "Id"
+                                    ],
                                     "object_paths": ["/test-project/*"],
                                 }
                             ),

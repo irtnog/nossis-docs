@@ -26,6 +26,7 @@ from datetime import UTC, datetime
 
 import boto3
 import pytest
+from faker import Faker
 from moto import mock_aws
 from mypy_boto3_cloudfront import CloudFrontClient
 from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
@@ -75,9 +76,12 @@ def cloudfront(_aws_credentials: None) -> CloudFrontClient:
 
 
 @pytest.fixture
-def mock_distribution(cloudfront: CloudFrontClient) -> CreateDistributionResultTypeDef:
+def distribution(
+    faker: Faker, cloudfront: CloudFrontClient
+) -> CreateDistributionResultTypeDef:
     """Mock up a CloudFront distribution.
 
+    :param faker: A fake data generator.
     :param cloudfront: A CloudFront client connected to a mock AWS
         account.
     :return: Information about the CloudFront distribution.
@@ -89,13 +93,14 @@ def mock_distribution(cloudfront: CloudFrontClient) -> CreateDistributionResultT
         DistributionConfig={
             "CallerReference": datetime.now(UTC).isoformat(),
             "DefaultRootObject": "index.html",
+            # TODO: Get content from a mock S3 bucket.
             "Origins": {
                 "Quantity": 1,
                 "Items": [
                     {
                         "Id": (origin_id := "test-origin"),
-                        "DomainName": "www.example.com",
-                        "CustomOriginConfig": {  # TODO: use a mock S3 bucket
+                        "DomainName": faker.hostname(),
+                        "CustomOriginConfig": {
                             "HTTPPort": 80,
                             "HTTPSPort": 443,
                             "OriginProtocolPolicy": "https-only",
