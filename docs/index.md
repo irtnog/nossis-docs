@@ -62,4 +62,5 @@ GitHub Pages
 
 contributing.md
 credits.md
+apidocs/index.rst
 ```

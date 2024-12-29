@@ -28,6 +28,7 @@ release = __version__
 version = release
 
 extensions = [
+    "autodoc2",
     "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
@@ -47,6 +48,14 @@ suppress_warnings = ["myst.strikethrough"]
 locale_dirs = ["_locales"]
 templates_path = ["_templates"]
 exclude_patterns = [".*", "Thumbs.db", ".DS_Store"]
+
+autodoc2_packages = [
+    {
+        "module": "nossis_docs",
+        "path": "../src/nossis_docs",
+    },
+]
+autodoc2_hidden_objects = ["dunder", "private", "inherited"]
 
 myst_enable_extensions = [
     "amsmath",
