@@ -136,3 +136,9 @@ variable "stack_name" {
   type        = string
   nullable    = false
 }
+
+variable "tags_all" {
+  description = "Apply these AWS metadata tags to all resources."
+  type        = string
+  default     = "{}"
+}

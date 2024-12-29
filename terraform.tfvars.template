@@ -28,6 +28,7 @@ hostname                  = "$HOSTNAME"
 s3_encryption_key_arn     = "$S3_ENCRYPTION_KEY_ARN"
 s3_server_side_encryption = "$S3_SERVER_SIDE_ENCRYPTION"
 stack_name                = "$STACK_NAME"
+tags_all                  = "$TAGS_ALL"
 
 # Local Variables:
 # mode: terraform

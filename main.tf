@@ -28,7 +28,12 @@ terraform {
   }
 }
 
-provider "aws" {}
+provider "aws" {
+  default_tags {
+    tags = jsondecode(var.tags_all)
+  }
+}
+
 data "aws_partition" "current" {}
 
 locals {
