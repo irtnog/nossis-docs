@@ -42,6 +42,15 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      # Map release branches to environments.  If the corresponding
+      # environment does not exist, the job will create it.
+      name:
+        ${{
+          ((github.ref_name == 'main') || startsWith(github.ref_name, 'releases/'))
+          && github.ref_name
+          || null
+        }}
     permissions:
       # Give the job permission to log into AWS using the GitHub OIDC
       # OpenID provider.  Remember to limit which repository branches
