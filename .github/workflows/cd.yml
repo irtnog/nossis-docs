@@ -60,9 +60,9 @@ jobs:
       # On feature branches, deploy from source to the staging
       # environment.  If necessary, mimic just enough of the release
       # process to create similar build artifacts.
-      - if: (github.ref != 'main') && !startsWith('releases/', github.ref)
+      - if: (github.ref_name != 'main') && !startsWith(github.ref_name, 'releases/')
         uses: actions/checkout@v4
-      - if: (github.ref != 'main') && !startsWith('releases/', github.ref)
+      - if: (github.ref_name != 'main') && !startsWith(github.ref_name, 'releases/')
         run: |
           pip install build pip-tools
           pip-compile -o requirements.txt pyproject.toml
@@ -71,14 +71,14 @@ jobs:
 
       # On the main or release branches, deploy to production from the
       # latest release.
-      - if: (github.ref == 'main') || startsWith('releases/', github.ref)
+      - if: (github.ref_name == 'main') || startsWith(github.ref_name, 'releases/')
         uses: robinraju/release-downloader@v1
         with:
           latest: true
           fileName: '*'
           tarBall: true
           token: ${{ secrets.GITHUB_TOKEN }}
-      - if: (github.ref == 'main') || startsWith('releases/', github.ref)
+      - if: (github.ref_name == 'main') || startsWith(github.ref_name, 'releases/')
         run: |
           tar -xz --strip-components=1 -f ./*.tar.gz
           mv terraform.lock.hcl .terraform.lock.hcl
