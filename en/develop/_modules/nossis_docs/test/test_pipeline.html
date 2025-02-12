@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nossis_docs.test.test_pipeline &#8212; nossis-docs 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5db94ae7"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nossis_docs/test/test_pipeline';</script>
+    <link rel="icon" href="../../../_static/favicon-32x32.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.0.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">nossis-docs 0.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../index.html">
+                    sd_hide_title: True
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../apidocs/index.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.test.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.test</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.test.test_pipeline.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.test.test_pipeline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.test.conftest.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.test.conftest</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.pipeline.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.pipeline</span></code></a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<style type="text/css">
+  ul.version_list { padding-left: 0; }
+  ul.version_list li.version_item { display: inline; }
+  li.version_item a {
+    color: white;
+    background-color: #097aba;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0.35rem;
+  }
+  li.version_item a:hover {
+    background-color: #064061;
+    text-decoration: none;
+  }
+  li.version_item.current_version {
+    color: white;
+    background-color: #064061;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0.35rem;
+  }
+</style>
+<h3>Versions</h3>
+<ul class="version_list">
+    
+      <li class="version_item current_version">develop</li>
+    
+</ul>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/irtnog/nossis-docs" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/irtnog/nossis-docs/issues/new?title=Issue%20on%20page%20%2F_modules/nossis_docs/test/test_pipeline.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+
+  <h1>Source code for nossis_docs.test.test_pipeline</h1><div class="highlight"><pre>
+<span></span><span class="c1"># nossis-docs, serverless hosting for static, private web sites that</span>
+<span class="c1"># works like GitHub Pages</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (C) 2024  Matthew X. Economou</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU Affero General Public License as</span>
+<span class="c1"># published by the Free Software Foundation, either version 3 of the</span>
+<span class="c1"># License, or (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but</span>
+<span class="c1"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c1"># Affero General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU Affero General Public</span>
+<span class="c1"># License along with this program.  If not, see</span>
+<span class="c1"># &lt;https://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">patch</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aws_lambda_powertools.utilities.data_classes</span><span class="w"> </span><span class="kn">import</span> <span class="n">CodePipelineJobEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aws_lambda_powertools.utilities.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LambdaContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">botocore.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mypy_boto3_cloudfront.type_defs</span><span class="w"> </span><span class="kn">import</span> <span class="n">CreateDistributionResultTypeDef</span>
+
+
+<div class="viewcode-block" id="test_invalidate_distribution">
+<a class="viewcode-back" href="../../../apidocs/nossis_docs/nossis_docs.test.test_pipeline.html#nossis_docs.test.test_pipeline.test_invalidate_distribution">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">smoke</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_invalidate_distribution</span><span class="p">(</span>
+    <span class="n">distribution</span><span class="p">:</span> <span class="n">CreateDistributionResultTypeDef</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulate a CodePipeline deploy stage signaling Lambda to</span>
+<span class="sd">    invalidate paths in a CloudFront distribution.</span>
+
+<span class="sd">    :param distribution: A mock CloudFront distribution.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># To ensure AWS test fixtures get set up BEFORE creating any boto3</span>
+    <span class="c1"># clients, import the code to be tested at the function level</span>
+    <span class="c1"># (i.e., here), not at the module level (above).  Otherwise, those</span>
+    <span class="c1"># boto3 clients may not use the test fixtures and could</span>
+    <span class="c1"># potentially alter real AWS infrastructure.</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nossis_docs.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">invalidate_distribution</span>
+
+    <span class="c1"># https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html#action-reference-Lambda-event</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="n">CodePipelineJobEvent</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;CodePipeline.job&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">job_id</span> <span class="o">:=</span> <span class="s2">&quot;11111111-abcd-1111-abcd-111111abcdef&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;accountId&quot;</span><span class="p">:</span> <span class="s2">&quot;111111111111&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;actionConfiguration&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;configuration&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;FunctionName&quot;</span><span class="p">:</span> <span class="s2">&quot;MyLambdaFunction&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;UserParameters&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                                <span class="p">{</span>
+                                    <span class="s2">&quot;distribution_id&quot;</span><span class="p">:</span> <span class="n">distribution</span><span class="p">[</span><span class="s2">&quot;Distribution&quot;</span><span class="p">][</span>
+                                        <span class="s2">&quot;Id&quot;</span>
+                                    <span class="p">],</span>
+                                    <span class="s2">&quot;object_paths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/test-project/*&quot;</span><span class="p">],</span>
+                                <span class="p">}</span>
+                            <span class="p">),</span>
+                        <span class="p">}</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;inputArtifacts&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                <span class="s2">&quot;s3Location&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                    <span class="s2">&quot;bucketName&quot;</span><span class="p">:</span> <span class="s2">&quot;bucket_name&quot;</span><span class="p">,</span>
+                                    <span class="s2">&quot;objectKey&quot;</span><span class="p">:</span> <span class="s2">&quot;filename&quot;</span><span class="p">,</span>
+                                <span class="p">},</span>
+                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;S3&quot;</span><span class="p">,</span>
+                            <span class="p">},</span>
+                            <span class="s2">&quot;revision&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ArtifactName&quot;</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;outputArtifacts&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="s2">&quot;artifactCredentials&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;secretAccessKey&quot;</span><span class="p">:</span> <span class="s2">&quot;secret_key&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;sessionToken&quot;</span><span class="p">:</span> <span class="s2">&quot;session_token&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;accessKeyId&quot;</span><span class="p">:</span> <span class="s2">&quot;access_key_ID&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;continuationToken&quot;</span><span class="p">:</span> <span class="s2">&quot;token_ID&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;encryptionKey&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">(</span>
+                            <span class="s2">&quot;arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-&quot;</span>
+                            <span class="s2">&quot;56ef-1234567890ab&quot;</span>
+                        <span class="p">),</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;KMS&quot;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">LambdaContext</span><span class="p">()</span>
+
+    <span class="c1"># Moto hasn&#39;t implemented CloudFront&#39;s PutJobFailureResult and</span>
+    <span class="c1"># PutJobSuccessResult API calls, so patch them here.</span>
+    <span class="n">orig_make_api_call</span> <span class="o">=</span> <span class="n">BaseClient</span><span class="o">.</span><span class="n">_make_api_call</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">mock_make_api_call</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">BaseClient</span><span class="p">,</span> <span class="n">operation_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Intercept calls to PutJobFailureResult and</span>
+<span class="sd">        PutJobSuccessResult.</span>
+
+<span class="sd">        :param self: An instance of botocore&#39;s AWS API client.</span>
+<span class="sd">        :param operation_name: The API being called.</span>
+<span class="sd">        :param api_params: Any parameters.</span>
+<span class="sd">        :return: The result of the API call.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">match</span> <span class="n">operation_name</span><span class="p">:</span>
+            <span class="c1"># https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobFailureResult.html</span>
+            <span class="k">case</span> <span class="s2">&quot;PutJobFailureResult&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="c1"># https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobSuccessResult.html</span>
+            <span class="k">case</span> <span class="s2">&quot;PutJobSuccessResult&quot;</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">api_params</span><span class="p">[</span><span class="s2">&quot;jobId&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">job_id</span>
+                <span class="k">return</span>
+
+        <span class="c1"># Fall through to the original _make_api_call function (well,</span>
+        <span class="c1"># not the ORIGINAL original---Moto&#39;s patched version).</span>
+        <span class="k">return</span> <span class="n">orig_make_api_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_name</span><span class="p">,</span> <span class="n">api_params</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">&quot;botocore.client.BaseClient._make_api_call&quot;</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="n">mock_make_api_call</span><span class="p">):</span>
+        <span class="n">invalidate_distribution</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+</pre></div>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Matthew X. Economou
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

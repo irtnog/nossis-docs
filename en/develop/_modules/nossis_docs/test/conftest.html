@@ -1,0 +1,592 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nossis_docs.test.conftest &#8212; nossis-docs 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5db94ae7"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nossis_docs/test/conftest';</script>
+    <link rel="icon" href="../../../_static/favicon-32x32.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.0.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">nossis-docs 0.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../index.html">
+                    sd_hide_title: True
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../apidocs/index.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.test.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.test</span></code></a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.test.test_pipeline.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.test.test_pipeline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.test.conftest.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.test.conftest</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../apidocs/nossis_docs/nossis_docs.pipeline.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nossis_docs.pipeline</span></code></a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<style type="text/css">
+  ul.version_list { padding-left: 0; }
+  ul.version_list li.version_item { display: inline; }
+  li.version_item a {
+    color: white;
+    background-color: #097aba;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0.35rem;
+  }
+  li.version_item a:hover {
+    background-color: #064061;
+    text-decoration: none;
+  }
+  li.version_item.current_version {
+    color: white;
+    background-color: #064061;
+    padding: 0.12rem 0.45rem;
+    border-radius: 0.35rem;
+  }
+</style>
+<h3>Versions</h3>
+<ul class="version_list">
+    
+      <li class="version_item current_version">develop</li>
+    
+</ul>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/irtnog/nossis-docs" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/irtnog/nossis-docs/issues/new?title=Issue%20on%20page%20%2F_modules/nossis_docs/test/conftest.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+
+  <h1>Source code for nossis_docs.test.conftest</h1><div class="highlight"><pre>
+<span></span><span class="c1"># nossis-docs, serverless hosting for static, private web sites that</span>
+<span class="c1"># works like GitHub Pages</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (C) 2024  Matthew X. Economou</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU Affero General Public License as</span>
+<span class="c1"># published by the Free Software Foundation, either version 3 of the</span>
+<span class="c1"># License, or (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but</span>
+<span class="c1"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c1"># Affero General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU Affero General Public</span>
+<span class="c1"># License along with this program.  If not, see</span>
+<span class="c1"># &lt;https://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;Configure test fixtures (mocks).&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">faker</span><span class="w"> </span><span class="kn">import</span> <span class="n">Faker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moto</span><span class="w"> </span><span class="kn">import</span> <span class="n">mock_aws</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mypy_boto3_cloudfront</span><span class="w"> </span><span class="kn">import</span> <span class="n">CloudFrontClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mypy_boto3_cloudfront.type_defs</span><span class="w"> </span><span class="kn">import</span> <span class="n">CreateDistributionResultTypeDef</span>
+
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_aws_credentials</span><span class="p">(</span><span class="n">socket_disabled</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Avoid mutating real AWS infrastructure by overwriting the</span>
+<span class="sd">    relevant process environment variables.</span>
+
+<span class="sd">    :param socket_disabled: Disables network access via pytest-socket.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">envvar</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;AWS_ACCESS_KEY_ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AWS_DEFAULT_REGION&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AWS_REGION&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AWS_SECRET_ACCESS_KEY&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AWS_SECURITY_TOKEN&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AWS_SESSION_TOKEN&quot;</span><span class="p">,</span>
+    <span class="p">]:</span>
+        <span class="c1"># A random string guarantees this never results in anything</span>
+        <span class="c1"># that could possibly be real.</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">envvar</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+    <span class="c1"># This can&#39;t overwrite $AWS_PROFILE with nonsense because botocore</span>
+    <span class="c1"># will try to load that configuration profile, so remove it from</span>
+    <span class="c1"># the process environment entirely.</span>
+    <span class="k">if</span> <span class="s2">&quot;AWS_PROFILE&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;AWS_PROFILE&quot;</span><span class="p">]</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MOTO_ALLOW_NONEXISTENT_REGION&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span>
+
+
+<div class="viewcode-block" id="cloudfront">
+<a class="viewcode-back" href="../../../apidocs/nossis_docs/nossis_docs.test.conftest.html#nossis_docs.test.conftest.cloudfront">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cloudfront</span><span class="p">(</span><span class="n">_aws_credentials</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudFrontClient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mock up a CloudFront client.</span>
+
+<span class="sd">    :param _aws_credentials: Blocks access to real AWS resources.</span>
+<span class="sd">    :return: A CloudFront client connected to a mock AWS account.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="n">mock_aws</span><span class="p">():</span>
+        <span class="k">yield</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;cloudfront&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="distribution">
+<a class="viewcode-back" href="../../../apidocs/nossis_docs/nossis_docs.test.conftest.html#nossis_docs.test.conftest.distribution">[docs]</a>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">distribution</span><span class="p">(</span>
+    <span class="n">faker</span><span class="p">:</span> <span class="n">Faker</span><span class="p">,</span> <span class="n">cloudfront</span><span class="p">:</span> <span class="n">CloudFrontClient</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CreateDistributionResultTypeDef</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mock up a CloudFront distribution.</span>
+
+<span class="sd">    :param faker: A fake data generator.</span>
+<span class="sd">    :param cloudfront: A CloudFront client connected to a mock AWS</span>
+<span class="sd">        account.</span>
+<span class="sd">    :return: Information about the CloudFront distribution.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloudfront/client/create_distribution.html</span>
+    <span class="k">return</span> <span class="n">cloudfront</span><span class="o">.</span><span class="n">create_distribution</span><span class="p">(</span>
+        <span class="n">DistributionConfig</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;CallerReference&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s2">&quot;DefaultRootObject&quot;</span><span class="p">:</span> <span class="s2">&quot;index.html&quot;</span><span class="p">,</span>
+            <span class="c1"># TODO: Get content from a mock S3 bucket.</span>
+            <span class="s2">&quot;Origins&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;Quantity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;Items&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;Id&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">origin_id</span> <span class="o">:=</span> <span class="s2">&quot;test-origin&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;DomainName&quot;</span><span class="p">:</span> <span class="n">faker</span><span class="o">.</span><span class="n">hostname</span><span class="p">(),</span>
+                        <span class="s2">&quot;CustomOriginConfig&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;HTTPPort&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+                            <span class="s2">&quot;HTTPSPort&quot;</span><span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+                            <span class="s2">&quot;OriginProtocolPolicy&quot;</span><span class="p">:</span> <span class="s2">&quot;https-only&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;OriginSslProtocols&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;Quantity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;TLSv1.2&quot;</span><span class="p">]},</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                <span class="p">],</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;DefaultCacheBehavior&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;TargetOriginId&quot;</span><span class="p">:</span> <span class="n">origin_id</span><span class="p">,</span>
+                <span class="s2">&quot;ViewerProtocolPolicy&quot;</span><span class="p">:</span> <span class="s2">&quot;redirect-to-https&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;AllowedMethods&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Quantity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="s2">&quot;Items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;CachedMethods&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;Quantity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="s2">&quot;Items&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">],</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;Compress&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;CachePolicyId&quot;</span><span class="p">:</span> <span class="s2">&quot;658327ea-f89d-4fab-a63d-7e88639e58f6&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;OriginRequestPolicyId&quot;</span><span class="p">:</span> <span class="s2">&quot;acba4595-bd28-49b8-b9fe-13317c0390fa&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ResponseHeadersPolicyId&quot;</span><span class="p">:</span> <span class="s2">&quot;67f7725c-6f97-4210-82d7-5512b31e9d03&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;CustomErrorResponses&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;Quantity&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span>
+                    <span class="n">custom_error_responses</span> <span class="o">:=</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;ErrorCode&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">,</span>
+                            <span class="s2">&quot;ResponseCode&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
+                            <span class="s2">&quot;ResponsePagePath&quot;</span><span class="p">:</span> <span class="s2">&quot;/error.html&quot;</span><span class="p">,</span>
+                        <span class="p">}</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">403</span><span class="p">,</span> <span class="mi">404</span><span class="p">,</span> <span class="mi">405</span><span class="p">,</span> <span class="mi">414</span><span class="p">,</span> <span class="mi">416</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">501</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span><span class="p">]</span>
+                    <span class="p">]</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;Items&quot;</span><span class="p">:</span> <span class="n">custom_error_responses</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;Comment&quot;</span><span class="p">:</span> <span class="s2">&quot;Test Fixture&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Logging&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;Enabled&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;IncludeCookies&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;Bucket&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Prefix&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;PriceClass&quot;</span><span class="p">:</span> <span class="s2">&quot;PriceClass_100&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;ViewerCertificate&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;CloudFrontDefaultCertificate&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;MinimumProtocolVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;TLSv1.2_2021&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;Restrictions&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;GeoRestriction&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;RestrictionType&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Quantity&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">&quot;Items&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;IsIPV6Enabled&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;Staging&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Matthew X. Economou
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
