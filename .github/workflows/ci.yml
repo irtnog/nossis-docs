@@ -20,6 +20,7 @@
 ---
 name: Continuous Integration
 
+
 # Trigger this workflow manually, by pushing commits to any branch, or
 # by filing a pull request.
 on:
@@ -27,9 +28,11 @@ on:
   push:
   pull_request:
 
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 
 jobs:
   setup:
@@ -182,7 +185,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           key: requirements-${{ needs.setup.outputs.source-hash }}
-          path: requirements.txt
+          path: |
+            requirements.txt
+            terraform.lock.hcl
       - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
         uses: actions/cache/restore@v4
         with:

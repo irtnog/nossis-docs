@@ -20,6 +20,7 @@
 ---
 name: Continuous Delivery
 
+
 # On feature branches, trigger this workflow manually.  On the main or
 # release branches, trigger it automatically.  (Note that runs
 # triggered by the workflow_run event always use the default branch
@@ -35,9 +36,11 @@ on:
     types:
       - completed
 
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 
 jobs:
   deploy:
