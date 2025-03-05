@@ -171,18 +171,6 @@ resource "aws_cloudfront_distribution" "this" {
   default_root_object = "index.html"
   price_class         = var.CLOUDFRONT_PRICE_CLASS
 
-  dynamic "custom_error_response" {
-    for_each = {
-      for i in [400, 403, 404, 405, 414, 416, 500, 501, 502, 503, 504] : i => "/error.html"
-    }
-
-    content {
-      error_code         = custom_error_response.key
-      response_code      = custom_error_response.key
-      response_page_path = custom_error_response.value
-    }
-  }
-
   viewer_certificate {
     acm_certificate_arn = each.value
     ssl_support_method  = "sni-only"
