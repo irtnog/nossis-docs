@@ -21,8 +21,8 @@ variable "CERT_DCV_METHOD" {
   description = <<-EOT
     (Optional) When requesting a new service certificate, use DNS
     record- or confirmation email-based domain control validation
-    (DCV).  If using DNS DCV (the default) and if hosted_zone_id is
-    set, the stack will handle this automatically.  Otherwise,
+    (DCV).  If using DNS DCV (the default) and if the hosted zone ID
+    is set, the stack will handle this automatically.  Otherwise,
     validation will require manual action by one of the domain's
     contacts.  For more information, refer to
     https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-validate-dns.html
