@@ -83,9 +83,9 @@ repos:
       - id: tofu_validate
       - id: tofu_fmt
       - id: tofu_docs
-      # - id: tofu_checkov
       - id: tofu_tflint
-      # - id: tofu_trivy
+      - id: tofu_checkov
+      - id: tofu_trivy
       # - id: terrascan
       # - id: infracost_breakdown
   - repo: local
