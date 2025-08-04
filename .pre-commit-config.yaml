@@ -17,6 +17,17 @@
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
 
+# Ignore temporary files/folders, but note that this doesn't always
+# work.  Check each linter's documentation for any required
+# tool-specific exclusions; cf. https://stackoverflow.com/a/75560858.
+exclude: |-
+  (?x)^(
+      .external_modules.*|
+      .terraform.*|
+      build.*|
+      dist.*
+  )$
+
 repos:
   # Ensure commit messages use Conventional Commits formatting;
   # see also .commitlintrc.js.
@@ -26,7 +37,6 @@ repos:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies: ["@commitlint/config-conventional"]
-
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -41,7 +51,6 @@ repos:
     rev: v1.7.4
     hooks:
       - id: actionlint
-
 
   # Check Python syntax.
   - repo: https://github.com/pycqa/flake8
@@ -62,13 +71,11 @@ repos:
           - flake8-pytest-style
           - flake8-requirements
 
-
   # Sort Python imports.
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
-
 
   # Reformat Python code after sorting imports.
   - repo: https://github.com/psf/black
@@ -76,32 +83,30 @@ repos:
     hooks:
       - id: black
 
-
-  # Lint/reformat the OpenTofu module.  Note that deployment artifacts
-  # must exist for this to work, so create placeholders (and clean up
-  # after) if those artifacts are missing.
-  - repo: local
-    hooks:
-      - id: mock-artifacts-generate
-        name: Mock up OpenTofu deployment artifacts
-        entry: .mock-artifacts-generate.sh
-        language: script
-        pass_filenames: false
+  # Lint/reformat the OpenTofu module.
   - repo: https://github.com/tofuutils/pre-commit-opentofu
-    rev: v2.1.0
+    rev: v2.2.1
     hooks:
       - id: tofu_validate
       - id: tofu_fmt
       - id: tofu_docs
       - id: tofu_tflint
       - id: tofu_checkov
+        args:
+          - --args=--download-external-modules true
+          - --args=--quiet
+          - --args=--skip-path .terraform
+          - --args=--skip-path build
+          - --args=--skip-path builds
+          - --args=--skip-path dist
+          - --args=--skip-path dist-lambda
       - id: tofu_trivy
+        args:
+          - --args=--skip-dirs .external_modules
+          - --args=--skip-dirs .terraform
+          - --args=--skip-dirs build
+          - --args=--skip-dirs builds
+          - --args=--skip-dirs dist
+          - --args=--skip-dirs dist-lambda
       # - id: terrascan
       # - id: infracost_breakdown
-  - repo: local
-    hooks:
-      - id: mock-artifacts-cleanup
-        name: Remove mock OpenTofu deployment artifacts
-        entry: .mock-artifacts-cleanup.sh
-        language: script
-        pass_filenames: false
