@@ -1,7 +1,7 @@
 # nossis-docs, serverless hosting for static, private web sites that
 # works like GitHub Pages
 #
-# Copyright (C) 2024  Matthew X. Economou
+# Copyright (C) 2024-2025  Matthew X. Economou
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -16,23 +16,6 @@
 # You should have received a copy of the GNU Affero General Public
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
-
-terraform {
-  required_version = ">= 1.8"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.46"
-    }
-  }
-}
-
-provider "aws" {
-  default_tags {
-    tags = jsondecode(var.TAGS_ALL)
-  }
-}
 
 data "aws_partition" "current" {}
 
