@@ -45,6 +45,12 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
+  # Check shell scripts, limiting output to errors and warnings.
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
+    hooks:
+      - id: shellcheck
+        args: ["--severity=warning"]
 
   # Check GitHub Actions workflows.
   - repo: https://github.com/rhysd/actionlint
