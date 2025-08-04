@@ -1,7 +1,7 @@
 # nossis-docs, serverless hosting for static, private web sites that
 # works like GitHub Pages
 #
-# Copyright (C) 2024  Matthew X. Economou
+# Copyright (C) 2024-2025  Matthew X. Economou
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -49,8 +49,18 @@ repos:
     hooks:
       - id: flake8
         additional_dependencies:
+          # Keep the list of flake8 plugins in sync with
+          # pyproject.toml.
+          - dlint
+          - flake8-bandit
           - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-docstrings
+          - flake8-eradicate
+          - flake8-fixme
+          - flake8-future-import
           - flake8-pytest-style
+          - flake8-requirements
 
 
   # Sort Python imports.
