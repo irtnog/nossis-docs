@@ -32,7 +32,7 @@ repos:
   # Ensure commit messages use Conventional Commits formatting;
   # see also .commitlintrc.js.
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.18.0
+    rev: v9.22.0
     hooks:
       - id: commitlint
         stages: [commit-msg]
@@ -47,20 +47,20 @@ repos:
 
   # Check shell scripts, limiting output to errors and warnings.
   - repo: https://github.com/koalaman/shellcheck-precommit
-    rev: v0.10.0
+    rev: v0.11.0
     hooks:
       - id: shellcheck
         args: ["--severity=warning"]
 
   # Check GitHub Actions workflows.
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.4
+    rev: v1.7.7
     hooks:
       - id: actionlint
 
   # Check Python syntax.
   - repo: https://github.com/pycqa/flake8
-    rev: 7.1.1
+    rev: 7.3.0
     hooks:
       - id: flake8
         additional_dependencies:
@@ -79,13 +79,13 @@ repos:
 
   # Sort Python imports.
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 6.0.1
     hooks:
       - id: isort
 
   # Reformat Python code after sorting imports.
   - repo: https://github.com/psf/black
-    rev: 24.10.0
+    rev: 25.1.0
     hooks:
       - id: black
 
