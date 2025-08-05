@@ -41,9 +41,12 @@ classifiers = [
 # constraints to address capability, compatibility, or security
 # issues, and avoid pinning specific versions if possible.
 dependencies = [
-    "aws-lambda-powertools",
+    "aws-lambda-powertools[tracer] @ git+https://github.com/xenophonf/powertools-lambda-python#egg=aws-lambda-powertools",
     "boto3",
-    "boto3-stubs[cloudfront,codepipeline]",
+    "boto3-stubs[boto3,cloudfront,codepipeline]",
+    "idpyoidc",
+    "mypy-boto3-cloudfront",
+    "mypy-boto3-codepipeline",
 ]
 
 [project.license]
@@ -59,13 +62,20 @@ dev = [
     "isort",
     "jedi",
     "matplotlib",
+    # https://github.com/executablebooks/mdit-py-plugins/pull/65
+    "mdit-py-plugins>0.3.4",
     "myst-parser[linkify,rtd]",
     "pip-tools",
     "pre-commit",
     "pystemmer",
     "python-semantic-release",
+    "rinohtype",
+    "sphinxcontrib-svg2pdfconverter[CairoSVG]",
+    "sphinx-autodoc2[cli]",
+    "sphinx-book-theme",
     "sphinx-intl",
     "sphinx-multiversion @ git+https://github.com/Holzhaus/sphinx-multiversion#egg=sphinx-multiversion",
+    "sphobjinv",
     "twine",
     "yapf",
     "yq",
