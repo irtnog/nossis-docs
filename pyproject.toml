@@ -113,10 +113,14 @@ profile = "black"
 skip_gitignore = true
 
 [tool.pytest.ini_options]
-# Recommended for new projects;
-# cf. https://docs.pytest.org/en/latest/explanation/goodpractices.html#choosing-an-import-mode.
 addopts = [
+    # Recommended for new projects;
+    # cf. https://docs.pytest.org/en/latest/explanation/goodpractices.html#choosing-an-import-mode.
     "--import-mode=importlib",
+    # Ignore directories containing build artifacts;
+    # cf. https://stackoverflow.com/a/64669513.
+    "--ignore-glob=build*",
+    "--ignore-glob=dist*",
 ]
 # Invoke smoke tests with `pytest -k smoke` or `pytest -m "smoke and
 # not slow"`.  See also https://docs.pytest.org/en/stable/mark.html,
