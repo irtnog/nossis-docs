@@ -47,8 +47,9 @@ sd_hide_title: True
 ```{rubric} nossis-docs
 ```
 
-Serverless hosting for static, private web sites that works like
-GitHub Pages
+Self-publish static, private web sites from dedicated branches in
+GitHub repositories---similar to GitHub Pages---using Amazon S3 and a
+compatible OpenID Connect (OIDC) identity provider.
 
 :::
 
@@ -60,7 +61,8 @@ GitHub Pages
 :hidden:
 :caption: Reference
 
-contributing.md
-credits.md
+charter
+contributing
+credits
 apidocs/index.rst
 ```
