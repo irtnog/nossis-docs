@@ -1,7 +1,7 @@
 % nossis-docs, serverless hosting for static, private web sites that
 % works like GitHub Pages
 %
-% Copyright (C) 2024  Matthew X. Economou
+% Copyright (C) 2024-2025  Matthew X. Economou
 %
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Affero General Public License as
@@ -19,24 +19,22 @@
 
 # Contributing
 
-This project combines [test-driven development](https://tdd.mooc.fi/),
-[atomic commits](https://www.aleksandrhovhannisyan.com/blog/atomic-git-commits/),
-a [linear commit history](https://archive.is/VpWTs), and the
-[Git feature branch workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow).
-Please rebase your changes on the latest HEAD of the main branch
-before submitting them for review as a
+The project practices [test-driven development](https://tdd.mooc.fi/)
+in
+[Git feature (topic) branches](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+to maintain a [linear commit history](https://archive.is/VpWTs).
+Changes must be self-contained and buildable, with updated tests and
+documentation.  Please rebase changes on the latest HEAD of the main
+branch before submitting them for review as a
 [GitHub pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
-Changes must include updated functional and integration tests.
-
 
 ## Development Environment
 
-This project requires Python 3.11 and OpenTofu 1.8 (or newer).  To set
-up your development environment on Linux or macOS, run these
+This project requires Python 3.12 or newer.  To set up your
+development environment on Linux or macOS, run these
 [GNU Make](https://www.gnu.org/software/make/) commands from the
 project root directory.
 
-{.glossary}
 `make setup`
 : Create (or update) a
   [Python virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments)
@@ -44,13 +42,11 @@ project root directory.
   installation of this project that includes development and testing
   tools.
 
-{.glossary}
 `make pre-commit`
 : Configure optional pre-commit hooks, which require the virtual
   environment to be active in your code editor or
   [Git porcelain](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain).
 
-{.glossary}
 `make clean`
 : Reset the development environment, which includes removing the
   pre-commit hooks.
@@ -58,18 +54,14 @@ project root directory.
 Additional targets are available, several of which are listed below.
 Review the makefile for details.
 
-{.glossary}
 `make lint`
 : Check code syntax and style.
 
-{.glossary}
 `make test`
 : Perform comprehensive functional and integration testing.
 
-{.glossary}
 `make smoke`
 : Run a shorter, faster subset of the test suite.
-
 
 ## Code Style
 
@@ -85,36 +77,68 @@ This project follows these code styles:
 
 - [the Home Assistant YAML style guide](https://developers.home-assistant.io/docs/documenting/yaml-style-guide/)
 
-
 ## Commit Messages
 
 This project implements
 [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) using
-[Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
-Please use English in commit messages.  The first line of the commit
-message should be at most 100 characters, while the rest of the commit
-message should be wrapped at column 70.  A commit's description should
-be a verb phrase in the imperative present tense, with the starting
-verb in lower case and no ending punctuation.
+[Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
 
-Valid commit types are:
+- Please use English in commit messages.
+
+- The first line of the commit message **SHOULD** be at most 100
+  characters, while the rest of the commit message **SHOULD** be
+  wrapped at column 70.
+
+- The commit description **SHOULD** be an imperative sentence that
+  summarizes the changes, with the starting verb in lower case and no
+  ending punctuation.
+
+- The commit type **MUST** be one of {term}`build`, {term}`chore`,
+  {term}`ci`, {term}`docs`, {term}`feat`, {term}`fix`, {term}`perf`,
+  {term}`style`, {term}`refactor`, or {term}`test`.
+
+### Commit Scopes
+
+An atomic commit can alter multiple files.  For example, an interface
+change would require modifications the class definitions, method
+calls, and property references throughout the codebase.  Per
+_Conventional Commits_, a commit scope is an **OPTIONAL**
+abbreviation, acronym, codename, or keyword that provides additional
+context to reviewers by naming the essential component of the change.
+
+For Python code changes, the commit scope **SHOULD** specify the
+second-level Python module name of the code instigating the change.
+The commit scope **MUST NOT** include the module's top-level prefix or
+any suffixes.  Functional/unit test changes **SHOULD** reference the
+scope of the code being exercised, while changes to integration tests
+**MUST NOT** specify a scope.
+
+Changes covering multiple scopes or changes not specific to one scope
+**MUST NOT** specify a scope, including changes instigated by code in
+second-level [dunder](https://wiki.python.org/moin/DunderAlias)
+modules such as `src/nossis_docs/__init__.py`.
+
+### Commit Types
 
 {.glossary}
 `build`
-: changes to the build system or external dependencies
+: a change to the build system or external dependencies, e.g., the
+  makefile
 
 {.glossary}
 `chore`
-: miscellaneous changes not covered by the other commit types
+: a miscellaneous tooling or tool configuration change, e.g., the
+  .gitignore file, or a change not covered by the other commit types
 
 {.glossary}
 `ci`
-: changes to the continuous integration/continuous delivery process,
-  e.g., GitHub Actions
+: a change to continuous integration/continuous delivery (CI/CD)
+  processes, e.g., GitHub Actions
 
 {.glossary}
 `docs`
-: documentation-only changes
+: a documentation-only change, including edits to in-line
+  documentation and comments
 
 {.glossary}
 `feat`
@@ -134,16 +158,9 @@ Valid commit types are:
 
 {.glossary}
 `style`
-: a code change that only affects formatting
+: a change that only affects formatting, or a change related to the
+  linter configuration
 
 {.glossary}
 `test`
-: new tests or corrections to existing tests
-
-Do not specify a scope for changes covering multiple scopes or for
-changes not specific to one scope.  Otherwise, a commit's scope should
-be the second-level OpenTofu or Python module name sans the top-level
-prefix or any suffixes.  For top-level
-[dunder](https://wiki.python.org/moin/DunderAlias) modules, use their
-names sans the double underscores as the scope, e.g., `init` for
-`__init__.py`.
+: a new test or a correction to an existing test
