@@ -1,3 +1,7 @@
+---
+sd_hide_title: true
+---
+
 % nossis-docs, serverless hosting for static, private web sites that
 % works like GitHub Pages
 %
@@ -16,10 +20,6 @@
 % You should have received a copy of the GNU Affero General Public
 % License along with this program.  If not, see
 % <https://www.gnu.org/licenses/>.
-
----
-sd_hide_title: True
----
 
 # Welcome
 
