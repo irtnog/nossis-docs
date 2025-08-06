@@ -93,6 +93,10 @@ jobs:
       # pre-commit hook, but not everyone may have that installed.
       - uses: pre-commit/action@v3.0.1
 
+  # Make builds reproducible by pinning every dependency as of this
+  # moment.  That way, anyone can re-build this version of the project
+  # later and get the same result without tasking developers with
+  # version pin maintenance.
   freeze:
     needs:
       - setup
@@ -117,7 +121,6 @@ jobs:
         with:
           key: workdir-${{ github.sha }}
           path: .
-
       # Use the oldest supported version of Python when generating
       # dependency pins to catch forward compatibility issues.  Keep
       # this in sync with the lint, test-matrix, build-matrix, and
@@ -131,21 +134,17 @@ jobs:
         id: setup-pip-tools
         run: pip install pip-tools
       - if: steps.cache-requirements.outputs.cache-hit != 'true'
-        uses: opentofu/setup-opentofu@v1.0.2
-
-      # Make builds reproducible by pinning every dependency as of
-      # this moment.  That way, anyone can re-build this version of
-      # the project later and get the same result without tasking
-      # developers with version pin maintenance.
-      - if: steps.cache-requirements.outputs.cache-hit != 'true'
         id: freeze-deps-python
         run: pip-compile -o requirements.txt pyproject.toml
+      - if: steps.cache-requirements.outputs.cache-hit != 'true'
+        uses: opentofu/setup-opentofu@v1.0.2
       - if: steps.cache-requirements.outputs.cache-hit != 'true'
         id: freeze-deps-opentofu
         run: |
           tofu providers lock
           mv .terraform.lock.hcl terraform.lock.hcl
 
+  # Run the test suite and generate a code coverage report.
   test-matrix:
     needs:
       - setup
@@ -173,9 +172,8 @@ jobs:
           key: pytest-${{ matrix.python-version }}-${{ needs.setup.outputs.source-hash }}
           lookup-only: true
           path: pytest.out
-
-      # Test against all supported language runtimes using the
-      # dependency versions pinned above.
+      # Guarantee test reproducibility by installing the dependency
+      # versions pinned above.
       - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
         uses: actions/cache/restore@v4
         with:
@@ -197,8 +195,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -e ".[test]"
-
-      # Run the test suite and generate a code coverage report.
       - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
         uses: pavelzw/pytest-action@v2
         with:
