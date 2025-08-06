@@ -56,6 +56,45 @@ TOMLQ       = $(call venvsearch,tomlq)
 YQ          = $(call venvsearch,yq)
 
 
+# On Debian/Ubuntu, install these build dependencies via APT.
+DEBIAN_BUILD_DEPS = \
+	build-essential \
+	devscripts \
+	equivs \
+	python3.13-full \
+	xmlsec1 \
+
+
+# On Debian/Ubuntu, install these Python packages' build dependencies.
+APT_GET_INSTALL = \
+apt-get -o Debug::pkgProblemResolver=yes -y --no-install-recommends install
+DEBIAN_SOURCE_DEPS = \
+	python3-cairosvg \
+
+
+# On macOS, install these build dependencies (formulas) via Homebrew.
+HOMEBREW_FORMULA_BUILD_DEPS = \
+	checkov \
+	tofu \
+
+
+# On macOS, install these build dependencies (casks) via Homebrew.
+HOMEBREW_CASK_BUILD_DEPS = \
+	docker \
+
+
+# On macOS, install these build dependencies via MacPorts.
+MACPORTS_BUILD_DEPS = \
+	act \
+	actionlint \
+	cairo \
+	jq \
+	libffi \
+	py313-cairosvg \
+	shellcheck \
+	tflint \
+
+
 # Get the package name.
 PYPACKAGE_NAME = \
 $(shell $(TOMLQ) -r '.tool.setuptools."package-dir"|keys[0]' pyproject.toml)
@@ -86,7 +125,9 @@ $(addprefix .git/hooks/, \
 # When adding an alias for a build artifact, add it to this list; cf.
 # https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
 .PHONY: \
+	build-deps \
 	clean \
+	clean-deps \
 	coverage \
 	debug \
 	dist \
@@ -115,6 +156,34 @@ lambda-functions.zip: .coverage
 	find lambda-functions -exec touch -t 197001010000.00 '{}' \;
 	cd lambda-functions && zip -X -r ../lambda-functions.zip .
 	rm -rf lambda-functions
+
+
+# Install build dependencies for local development.
+build-deps:
+	$(eval uname = $(or $(shell uname)))
+	$(if $(filter Darwin, $(uname)), \
+		sudo port -N install $(MACPORTS_BUILD_DEPS); \
+		brew install $(HOMEBREW_FORMULA_BUILD_DEPS); \
+		brew install --cask $(HOMEBREW_CASK_BUILD_DEPS))
+	$(if $(filter Linux, $(uname)), \
+		$(eval distro = $(or $(shell lsb_release -is))))
+	$(if $(filter Debian Ubuntu, $(distro)), \
+		sudo sed -i '/deb-src/s/^# //' /etc/apt/sources.list; \
+		sudo apt-get update; \
+		sudo DEBIAN_FRONTEND=noninteractive \
+			apt-get install -y --no-install-recommends \
+				software-properties-common \
+		; \
+		sudo add-apt-repository -y ppa:deadsnakes/ppa; \
+		sudo DEBIAN_FRONTEND=noninteractive \
+			apt-get install -y --no-install-recommends \
+				$(DEBIAN_BUILD_DEPS) \
+		; \
+		curl https://bootstrap.pypa.io/get-pip.py | python3.13 -; \
+		sudo DEBIAN_FRONTEND=noninteractive \
+			mk-build-deps -i -r -t "$(APT_GET_INSTALL)" \
+				$(DEBIAN_SOURCE_DEPS); \
+		rm -f *.buildinfo *.changes)
 
 
 # Build the distribution.
@@ -183,6 +252,24 @@ clean:
 		docs/_locales/en .terraform* $(PRE_COMMIT_HOOKS)
 	find . -type d -name __pycache__ -print | xargs rm -rf
 	find . -type d -name \*.egg-info -print | xargs rm -rf
+
+
+# This could remove packages other that the ones listed, so keep any
+# confirmation prompts (requires local administrator rights).
+clean-deps:
+	$(eval uname = $(or $(shell uname)))
+	$(if $(filter Darwin, $(uname)), \
+		sudo port uninstall $(MACPORTS_BUILD_DEPS); \
+		brew uninstall $(HOMEBREW_FORMULA_BUILD_DEPS); \
+		brew uninstall --cask $(HOMEBREW_CASK_BUILD_DEPS))
+	$(if $(filter Linux, $(uname)), \
+		$(eval distro = $(or $(shell lsb_release -is))))
+	$(if $(filter Debian Ubuntu, $(distro)), \
+		sudo apt-mark auto \
+			$(DEBIAN_BUILD_DEPS) \
+			$(addsuffix -build-deps, $(DEBIAN_SOURCE_DEPS)) \
+		; \
+		sudo apt-get autoremove)
 
 
 # Fingerprint the source code.  Run this in a fresh clone of the
