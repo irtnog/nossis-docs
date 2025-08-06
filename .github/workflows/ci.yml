@@ -198,8 +198,9 @@ jobs:
       - if: steps.cache-pytest-results.outputs.cache-hit != 'true'
         uses: pavelzw/pytest-action@v2
         with:
-          custom-arguments: --cov=nossis_docs --report-log=pytest.out
-
+          custom-arguments:
+            --cov="$(ls -d *.egg-info | sed -e s/.egg-info.//)"
+            --report-log=pytest.out
 
   release:
     needs:
@@ -225,9 +226,6 @@ jobs:
         uses: python-semantic-release/python-semantic-release@v8.3.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      # The build process might download and run third-party code, so
-      # pass the now release-ready source code to an unprivileged job.
       - uses: actions/cache/restore@v4
         with:
           key: requirements-${{ needs.setup.outputs.source-hash }}
@@ -239,9 +237,12 @@ jobs:
           key: release-${{ github.sha }}
           path: .
     outputs:
+      # The build process might download and run third-party code, so
+      # pass the now release-ready source code to an unprivileged job.
       released: ${{ steps.release.outputs.released }}
       tag: ${{ steps.release.outputs.tag }}
 
+  # Build the distribution.
   build-matrix:
     needs:
       - release
@@ -256,7 +257,6 @@ jobs:
           - '3.11'
     runs-on: ubuntu-latest
     steps:
-      # Build the distribution.
       - uses: actions/cache/restore@v4
         with:
           key: release-${{ github.sha }}
@@ -279,18 +279,19 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+  # Merge build artifacts.
   merge:
     needs:
       - build-matrix
     runs-on: ubuntu-latest
     steps:
-      # Merge build artifacts.
       - uses: actions/upload-artifact/merge@v4
         with:
           name: build-artifacts
           pattern: build-artifacts-*
           delete-merged: true
 
+  # Generate hypertext and print media.
   docs:
     needs:
       - release
@@ -300,7 +301,6 @@ jobs:
         with:
           key: release-${{ github.sha }}
           path: .
-
       # Use the oldest supported version of Python when generating
       # documentation to catch forward compatibility issues.  Keep
       # this in sync with the lint, freeze, test-matrix, and
@@ -309,10 +309,7 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
-
-      # Generate hypertext and print media.
       - run: make docs
-
       # The document generation process could run malicious
       # third-party code in a supply chain attack, so this job doesn't
       # run with elevated privileges.  Instead, it uploads
@@ -325,7 +322,75 @@ jobs:
           if-no-files-found: error
           overwrite: true
 
+  # Publish built distributions to TestPyPI first.  This will catch
+  # any problems before publishing to PyPI, which imposes strict
+  # limits on project names and package uploads; cf.
+  # https://pypi.org/help/#administration.
+  testpypi:
+    needs:
+      - release
+      - build-matrix
+      - merge
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/lethbridge
+    permissions:
+      # Allow this job to log into TestPyPI using the GitHub OIDC
+      # identity provider instead of static credentials; cf.
+      # https://docs.pypi.org/trusted-publishers/.
+      id-token: write
+    steps:
+      - uses: actions/cache/restore@v4.1.2
+        with:
+          key: release-${{ github.sha }}
+          path: .
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          merge-multiple: true
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          print-hash: true
+          verbose: true
 
+  # Publish built distributions to PyPI if the test publication
+  # succeeded.
+  pypi:
+    needs:
+      - release
+      - build-matrix
+      - merge
+      - testpypi
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/lethbridge
+    permissions:
+      # Allow this job to log into PyPI using the GitHub OIDC identity
+      # provider instead of static credentials; cf.
+      # https://docs.pypi.org/trusted-publishers/.
+      id-token: write
+    steps:
+      - uses: actions/cache/restore@v4.1.2
+        with:
+          key: release-${{ github.sha }}
+          path: .
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          merge-multiple: true
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
+          verbose: true
+
+  # Publish hypertext media using GitHub Pages.
   gh-pages:
     needs:
       - release
@@ -335,7 +400,6 @@ jobs:
       # Allow this job to push web content to the gh-pages branch.
       contents: write
     steps:
-      # Publish the web content using GitHub Pages.
       - uses: actions/download-artifact@v4
         with:
           name: doc-artifacts
@@ -346,7 +410,7 @@ jobs:
           publish_dir: build/html
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-
+  # Publish the release on GitHub.
   github:
     needs:
       - release
@@ -377,13 +441,9 @@ jobs:
           name: doc-artifacts
           path: build/
           merge-multiple: true
-
       # Third parties should be able to build and deploy the exact
       # same distribution for verification purposes.
-      - run: |
-          cp requirements*.txt terraform.lock.hcl dist/
-
-      # Publish built distributions and documentation on GitHub.
+      - run: cp requirements*.txt terraform.lock.hcl dist/
       - uses: python-semantic-release/upload-to-gh-release@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
