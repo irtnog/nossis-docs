@@ -19,7 +19,6 @@
 ---
 name: Continuous Integration
 
-
 # Trigger this workflow manually, by pushing commits to any branch, or
 # by filing a pull request.
 on:
@@ -27,11 +26,11 @@ on:
   push:
   pull_request:
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: read-all
 
 jobs:
   setup:
@@ -63,7 +62,6 @@ jobs:
     outputs:
       source-hash: ${{ steps.hash-source-code.outputs.hash }}
 
-
   lint:
     needs: setup
     runs-on: ubuntu-latest
@@ -94,7 +92,6 @@ jobs:
       # Double-check code syntax/style.  This ought to happen in a
       # pre-commit hook, but not everyone may have that installed.
       - uses: pre-commit/action@v3.0.1
-
 
   freeze:
     needs:
@@ -148,7 +145,6 @@ jobs:
         run: |
           tofu providers lock
           mv .terraform.lock.hcl terraform.lock.hcl
-
 
   test-matrix:
     needs:
@@ -250,7 +246,6 @@ jobs:
       released: ${{ steps.release.outputs.released }}
       tag: ${{ steps.release.outputs.tag }}
 
-
   build-matrix:
     needs:
       - release
@@ -288,7 +283,6 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
-
   merge:
     needs:
       - build-matrix
@@ -300,7 +294,6 @@ jobs:
           name: build-artifacts
           pattern: build-artifacts-*
           delete-merged: true
-
 
   docs:
     needs:
