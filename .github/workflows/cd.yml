@@ -44,23 +44,27 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    # Map release branches to environments.  If the corresponding
+    # environment does not exist, the job will create it.
     environment:
-      # Map release branches to environments.  If the corresponding
-      # environment does not exist, the job will create it.
       name:
         ${{
           ((github.ref_name == 'main') || startsWith(github.ref_name, 'releases/'))
           && github.ref_name
           || null
         }}
+
     permissions:
       # Give the job permission to log into AWS using the GitHub OIDC
       # OpenID provider.  Remember to limit which repository branches
-      # or environments can assume which IAM roles.
+      # or environments can assume which IAM roles, e.g.,
+      # `repo:octo-org/octo-repo:environment:main`.
       id-token: write
 
       # Give the job permission to download releases.
       contents: read
+
     steps:
       # Use the same hardware architecture and the same Python version
       # as the Lambda functions' runtimes.
@@ -88,14 +92,38 @@ jobs:
           mv terraform.lock.hcl .terraform.lock.hcl
           echo "file://localhost$(pwd)/$(echo *.whl)" >> requirements.txt
 
-      # Configure the stack.
+      # Configure the stack via GitHub Actions secrets/variables whose
+      # names start with a leading underscore, letting SREs add/remove
+      # input variables without requiring CI/CD pipeline definition
+      # changes.
       - uses: easyware-io/export-to-env@v1
         with:
           secrets: ${{ toJSON(secrets) }}
           vars: ${{ toJSON(vars) }}
-          only: TF_*
-      - id: configure-tf-backend
-        run: printf "%s" "${TF_BACKEND}" | tee backend_override.tf
+          only: ^_.*
+          # GitHub Actions forces secret/variable names into upper
+          # case, but OpenTofu input variable names are typically
+          # lower case.
+          transform: lowercase
+          # OpenTofu will read input variables from the process
+          # environment, but the corresponding environment variable
+          # names must have a prefix of `TF_VAR_`;
+          # cf. https://opentofu.org/docs/language/values/variables/.
+          prefix: TF_VAR
+          # The resulting environment variable names are mixed case,
+          # e.g., a GitHub Actions variable named `_FOOBAR` is
+          # converted to a process environment variable named
+          # `TF_VAR_foobar`, which sets the value of OpenTofu input
+          # variable `foobar`.
+          transformPrefix: false
+
+      # Configure the state storage back end.
+      - uses: easyware-io/export-to-env@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          vars: ${{ toJSON(vars) }}
+          only: TF_BACKEND
+      - run: printf "%s" "${TF_BACKEND}" | tee backend_override.tf
 
       # Log into AWS.
       - uses: aws-actions/configure-aws-credentials@v4

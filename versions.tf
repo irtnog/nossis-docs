@@ -29,6 +29,6 @@ terraform {
 
 provider "aws" {
   default_tags {
-    tags = jsondecode(var.TAGS_ALL)
+    tags = jsondecode(var.tags_all)
   }
 }

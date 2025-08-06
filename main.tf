@@ -20,34 +20,34 @@ data "aws_partition" "current" {}
 
 locals {
   with_s3_sse_kms = alltrue([
-    var.S3_SERVER_SIDE_ENCRYPTION == "SSE-KMS",
-    var.S3_ENCRYPTION_KEY_ARN != "",
+    var.s3_server_side_encryption == "SSE-KMS",
+    var.s3_encryption_key_arn != "",
   ])
 
   with_route53_dns_dcv = alltrue([
-    var.CERTIFICATE_ARN == "",
-    var.CERT_DCV_METHOD == "DNS",
-    var.HOSTED_ZONE_ID != "",
+    var.certificate_arn == "",
+    var.cert_dcv_method == "DNS",
+    var.hosted_zone_id != "",
   ])
 
-  fqdn = "${var.HOSTNAME}.${var.DOMAIN_NAME}"
+  fqdn = "${var.hostname}.${var.domain_name}"
 
-  s3_origin_id = "${var.STACK_NAME}-s3-origin"
+  s3_origin_id = "${var.stack_name}-s3-origin"
 
-  git_repos = jsondecode(var.GIT_REPOS)
+  git_repos = jsondecode(var.git_repos)
 }
 
 
 # Request a certificate if one wasn't specified.
 resource "aws_acm_certificate" "this" {
-  count = var.CERTIFICATE_ARN == "" ? 1 : 0
+  count = var.certificate_arn == "" ? 1 : 0
 
   domain_name       = local.fqdn
-  validation_method = var.CERT_DCV_METHOD
+  validation_method = var.cert_dcv_method
 
   validation_option {
     domain_name       = local.fqdn
-    validation_domain = var.DOMAIN_NAME
+    validation_domain = var.domain_name
   }
 
   lifecycle {
@@ -81,7 +81,7 @@ resource "aws_route53_record" "this" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = var.HOSTED_ZONE_ID
+  zone_id         = var.hosted_zone_id
 }
 
 
@@ -101,7 +101,7 @@ resource "aws_acm_certificate_validation" "this" {
 
 # Store web content in an S3 bucket.
 resource "aws_s3_bucket" "this" {
-  bucket = "${var.STACK_NAME}-content"
+  bucket = "${var.stack_name}-content"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
@@ -110,7 +110,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = local.with_s3_sse_kms ? "aws:kms" : "AES256"
-      kms_master_key_id = var.S3_ENCRYPTION_KEY_ARN
+      kms_master_key_id = var.s3_encryption_key_arn
     }
   }
 }
@@ -139,19 +139,19 @@ resource "aws_s3_bucket_policy" "this" {
 
 # Serve the web content using CloudFront.
 resource "aws_cloudfront_distribution" "this" {
-  for_each = var.CERTIFICATE_ARN == "" ? {
+  for_each = var.certificate_arn == "" ? {
     for cert in aws_acm_certificate_validation.this : local.fqdn => cert.certificate_arn
     } : {
-    local.fqdn = var.CERTIFICATE_ARN
+    local.fqdn = var.certificate_arn
   }
 
-  comment = "${each.key} (${var.STACK_NAME})"
+  comment = "${each.key} (${var.stack_name})"
   aliases = [each.key]
 
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  price_class         = var.CLOUDFRONT_PRICE_CLASS
+  price_class         = var.cloudfront_price_class
 
   viewer_certificate {
     acm_certificate_arn = each.value
@@ -200,7 +200,7 @@ resource "aws_cloudfront_distribution" "this" {
 
 # Publish the CloudFront distribution in DNS.
 resource "aws_route53_record" "cdn" {
-  for_each = var.HOSTED_ZONE_ID != "" ? {
+  for_each = var.hosted_zone_id != "" ? {
     for dist in aws_cloudfront_distribution.this : local.fqdn => {
       domain_name    = dist.domain_name
       hosted_zone_id = dist.hosted_zone_id
@@ -210,7 +210,7 @@ resource "aws_route53_record" "cdn" {
   allow_overwrite = true
   name            = each.key
   type            = "A"
-  zone_id         = var.HOSTED_ZONE_ID
+  zone_id         = var.hosted_zone_id
 
   alias {
     name    = each.value.domain_name
@@ -223,7 +223,7 @@ resource "aws_route53_record" "cdn" {
 
 # Store build artifacts in S3 for one day.
 resource "aws_s3_bucket" "pipeline" {
-  bucket = "${var.STACK_NAME}-temp"
+  bucket = "${var.stack_name}-temp"
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "pipeline" {
@@ -260,7 +260,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline" {
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = local.with_s3_sse_kms ? "aws:kms" : "AES256"
-      kms_master_key_id = var.S3_ENCRYPTION_KEY_ARN
+      kms_master_key_id = var.s3_encryption_key_arn
     }
   }
 }
@@ -268,7 +268,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline" {
 
 # Connect to GitHub.
 resource "aws_codestarconnections_connection" "github" {
-  name          = "${var.STACK_NAME}-github"
+  name          = "${var.stack_name}-github"
   provider_type = "GitHub"
 }
 
@@ -278,7 +278,7 @@ resource "aws_codestarconnections_connection" "github" {
 # principle of least astonishment.  As this log only really exists for
 # diagnostic purposes, limit log retention to 3 days.
 resource "aws_cloudwatch_log_group" "invalidate_distribution" {
-  name              = "/aws/lambda/${var.STACK_NAME}-invalidate-distribution"
+  name              = "/aws/lambda/${var.stack_name}-invalidate-distribution"
   retention_in_days = 3
 }
 
@@ -298,18 +298,18 @@ data "aws_iam_policy_document" "lambda_trust" {
 }
 
 resource "aws_iam_role" "invalidate_distribution" {
-  name               = "${var.STACK_NAME}-invalidate-distribution"
+  name               = "${var.stack_name}-invalidate-distribution"
   assume_role_policy = data.aws_iam_policy_document.lambda_trust.json
 }
 
 resource "aws_lambda_function" "invalidate_distribution" {
-  function_name    = "${var.STACK_NAME}-invalidate-distribution"
+  function_name    = "${var.stack_name}-invalidate-distribution"
   role             = aws_iam_role.invalidate_distribution.arn
   filename         = "lambda-functions.zip"
   source_code_hash = filebase64sha256("lambda-functions.zip")
   handler          = "nossis_docs.pipeline.invalidate_distribution"
   runtime          = "python3.13"
-  architectures    = [var.LAMBDA_ARCH]
+  architectures    = [var.lambda_arch]
 
   logging_config {
     log_group  = aws_cloudwatch_log_group.invalidate_distribution.name
@@ -350,7 +350,7 @@ data "aws_iam_policy_document" "invalidate_distribution" {
 }
 
 resource "aws_iam_policy" "invalidate_distribution" {
-  name   = "${var.STACK_NAME}-invalidate-distribution"
+  name   = "${var.stack_name}-invalidate-distribution"
   policy = data.aws_iam_policy_document.invalidate_distribution.json
 }
 
@@ -374,7 +374,7 @@ data "aws_iam_policy_document" "codepipeline_trust" {
 }
 
 resource "aws_iam_role" "this" {
-  name               = "${var.STACK_NAME}-codepipeline"
+  name               = "${var.stack_name}-codepipeline"
   assume_role_policy = data.aws_iam_policy_document.codepipeline_trust.json
 }
 
@@ -404,7 +404,7 @@ data "aws_iam_policy_document" "this" {
         "kms:Decrypt",
         "kms:Encrypt",
       ]
-      resources = [var.S3_ENCRYPTION_KEY_ARN]
+      resources = [var.s3_encryption_key_arn]
     }
   }
 
@@ -428,7 +428,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_policy" "this" {
-  name   = "${var.STACK_NAME}-codepipeline"
+  name   = "${var.stack_name}-codepipeline"
   policy = data.aws_iam_policy_document.this.json
 }
 
@@ -448,7 +448,7 @@ resource "aws_codepipeline" "this" {
     }
   }
 
-  name     = "${var.STACK_NAME}-${each.value.repo_id}"
+  name     = "${var.stack_name}-${each.value.repo_id}"
   role_arn = aws_iam_role.this.arn
 
   artifact_store {
@@ -459,7 +459,7 @@ resource "aws_codepipeline" "this" {
       for_each = local.with_s3_sse_kms ? [1] : []
       content {
         type = "KMS"
-        id   = var.S3_ENCRYPTION_KEY_ARN
+        id   = var.s3_encryption_key_arn
       }
     }
   }
@@ -478,7 +478,7 @@ resource "aws_codepipeline" "this" {
       configuration = {
         ConnectionArn    = aws_codestarconnections_connection.github.arn
         FullRepositoryId = each.value.full_repo_id
-        BranchName       = var.GH_PAGES_BRANCH
+        BranchName       = var.gh_pages_branch
       }
 
       output_artifacts = ["pages"]
@@ -502,7 +502,7 @@ resource "aws_codepipeline" "this" {
         BucketName          = aws_s3_bucket.this.bucket
         Extract             = true
         ObjectKey           = each.value.repo_id
-        KMSEncryptionKeyARN = local.with_s3_sse_kms ? var.S3_ENCRYPTION_KEY_ARN : null
+        KMSEncryptionKeyARN = local.with_s3_sse_kms ? var.s3_encryption_key_arn : null
       }
     }
   }
