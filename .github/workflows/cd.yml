@@ -69,17 +69,10 @@ jobs:
         with:
           python-version: '3.13'
 
-      # On feature branches, deploy from source to the staging
-      # environment.  If necessary, mimic just enough of the release
-      # process to create similar build artifacts.
+      # On feature branches, deploy from source to the testing
+      # environment.
       - if: (github.ref_name != 'main') && !startsWith(github.ref_name, 'releases/')
         uses: actions/checkout@v4
-      - if: (github.ref_name != 'main') && !startsWith(github.ref_name, 'releases/')
-        run: |
-          pip install build pip-tools
-          pip-compile -o requirements.txt pyproject.toml
-          python -m build
-          mv dist/*.whl .
 
       # On the main or release branches, deploy to production from the
       # latest release.
@@ -94,13 +87,7 @@ jobs:
         run: |
           tar -xz --strip-components=1 -f ./*.tar.gz
           mv terraform.lock.hcl .terraform.lock.hcl
-
-      # If necessary, create the deployment package.
-      - run: |
           echo "file://localhost$(pwd)/$(echo *.whl)" >> requirements.txt
-          pip install --no-compile --target lambda-functions -r requirements.txt
-          find lambda-functions -exec touch -t 197001010000.00 '{}' \;
-          cd lambda-functions && zip -X -r ../lambda-functions.zip .
 
       # Configure the stack.
       - uses: easyware-io/export-to-env@v1

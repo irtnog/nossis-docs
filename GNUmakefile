@@ -17,8 +17,14 @@
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
 
-# Prepare these translations.
-TRANSLATIONS=
+# Avoid problems on systems where the SHELL variable might be
+# inherited from the environment.
+SHELL = /bin/sh
+
+
+# Explicitly clear and then set the suffixes used in implicit rules.
+.SUFFIXES:
+# .SUFFIXES: .c .o
 
 
 # Search a colon-separated list of directories for one of the given
@@ -95,6 +101,10 @@ MACPORTS_BUILD_DEPS = \
 	tflint \
 
 
+# Determine the canonical path to the project's working directory.
+PROJECT_ROOT = $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+
+
 # Get the package name.
 PYPACKAGE_NAME = \
 $(shell $(TOMLQ) -r '.tool.setuptools."package-dir"|keys[0]' pyproject.toml)
@@ -104,6 +114,10 @@ $(shell $(TOMLQ) -r '.tool.setuptools."package-dir"|keys[0]' pyproject.toml)
 # related work in progress).
 SOURCEISH ?= $(or $(shell git ls-tree --full-tree --name-only -r HEAD src))
 UNTRACKED ?= $(or $(shell git ls-files --others --exclude-standard src))
+
+
+# Prepare these translations.
+TRANSLATIONS=
 
 
 # Enumerate translation targets.
@@ -124,7 +138,9 @@ $(addprefix .git/hooks/, \
 
 # When adding an alias for a build artifact, add it to this list; cf.
 # https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
+# Sort the list alphabetically.
 .PHONY: \
+	all \
 	build-deps \
 	clean \
 	clean-deps \
@@ -139,7 +155,6 @@ $(addprefix .git/hooks/, \
 	lint \
 	locale \
 	locales \
-	package \
 	pre-commit \
 	setup \
 	smoke \
@@ -148,14 +163,8 @@ $(addprefix .git/hooks/, \
 	venv \
 
 
-# Package the Lambda functions for deployment by OpenTofu.
-package: lambda-functions.zip
-lambda-functions.zip: .coverage
-	rm -rf lambda-functions
-	. .venv/bin/activate; python -m pip install --no-compile --target lambda-functions .
-	find lambda-functions -exec touch -t 197001010000.00 '{}' \;
-	cd lambda-functions && zip -X -r ../lambda-functions.zip .
-	rm -rf lambda-functions
+# Set the default target when running `make`.
+all: .coverage
 
 
 # Install build dependencies for local development.
@@ -186,13 +195,29 @@ build-deps:
 		rm -f *.buildinfo *.changes)
 
 
-# Build the distribution.
-dist: .coverage
-	. .venv/bin/activate; python -m build
-	. .venv/bin/activate; twine check dist/*
+# Create the development environment.
+venv .venv:
+	$(PYTHON) -m venv .venv
+	. .venv/bin/activate; python -m pip install -U pip-with-requires-python
+	. .venv/bin/activate; python -m pip install -U pip setuptools
 
-distclean:
-	rm -rf dist
+
+# Set up the development environment.
+setup $(PYPACKAGE_NAME).egg-info: pyproject.toml .venv
+	. .venv/bin/activate; python -m pip install -e .[dev,test]
+
+
+# Install the pre-commit hooks.
+pre-commit: $(PRE_COMMIT_HOOKS)
+.git/hooks/%: .pre-commit-config.yaml $(PYPACKAGE_NAME).egg-info
+	$(PRE_COMMIT) validate-config
+	$(PRE_COMMIT) validate-manifest
+	$(PRE_COMMIT) install --install-hooks --hook-type $*
+
+
+# Run the linter (including unstaged changes).
+lint: $(PRE_COMMIT_HOOKS)
+	$(PRE_COMMIT) run --show-diff-on-failure --all-files
 
 
 # Run the test suite.
@@ -221,36 +246,28 @@ gettext build/gettext: | $(PYPACKAGE_NAME).egg-info
 	touch build/gettext
 
 
-# Run the linter (including unstaged changes).
-lint: $(PRE_COMMIT_HOOKS)
-	$(PRE_COMMIT) run --show-diff-on-failure --all-files
+# Build the distribution.
+dist: .coverage
+	. .venv/bin/activate; [ -f requirements.txt ] || ( \
+		pip-compile -o requirements.txt pyproject.toml; \
+		python -m build; \
+		twine check dist/*; \
+		echo "file://localhost$(PROJECT_ROOT)$(wildcard dist/*.whl)" \
+			>> requirements.txt \
+	)
+	. .venv/bin/activate; pip install --no-compile --target dist-lambda -r requirements.txt
+	find dist-lambda -exec touch -t 198001010000.00 '{}' \;
 
-
-# Install the pre-commit hooks.
-pre-commit: $(PRE_COMMIT_HOOKS)
-.git/hooks/%: .pre-commit-config.yaml $(PYPACKAGE_NAME).egg-info
-	$(PRE_COMMIT) validate-config
-	$(PRE_COMMIT) validate-manifest
-	$(PRE_COMMIT) install --install-hooks --hook-type $*
-
-
-# Set up the development environment.
-setup $(PYPACKAGE_NAME).egg-info: pyproject.toml .venv
-	. .venv/bin/activate; python -m pip install -e .[dev,test]
-
-
-# Create the development environment.
-venv .venv:
-	$(PYTHON) -m venv .venv
-	. .venv/bin/activate; python -m pip install -U pip-with-requires-python
-	. .venv/bin/activate; python -m pip install -U pip setuptools
+distclean:
+	rm -rf dist* requirements.txt
 
 
 # Remove build artifacts and reset the development environment.
-clean:
-	rm -rf build .coverage dist .pytest_cache .venv* docs/apidocs \
-		docs/_locales/en .terraform* $(PRE_COMMIT_HOOKS)
+clean: distclean
+	rm -rf build* .coverage .pytest_cache .venv* docs/apidocs \
+		docs/_locales/en $(PRE_COMMIT_HOOKS)
 	find . -type d -name __pycache__ -print | xargs rm -rf
+	find . -type d -name .external_modules -print | xargs rm -rf
 	find . -type d -name \*.egg-info -print | xargs rm -rf
 
 
