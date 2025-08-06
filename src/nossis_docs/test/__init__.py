@@ -1,7 +1,6 @@
-# nossis-docs, serverless hosting for static, private web sites that
-# works like GitHub Pages
+# Nossis Docs, serverless hosting for static, private web sites
 #
-# Copyright (C) 2024  Matthew X. Economou
+# Copyright (C) 2024-2025  Matthew X. Economou
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -17,5 +16,17 @@
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
 
-"""Bundle functional and integration tests in the distribution, which
-facilitates the operational qualification of production deployments."""
+"""Bundle functional and integration tests in the distribution.
+
+This facilitates the operational qualification of production
+deployments.
+
+The names of functional test modules corresponds to the module being
+exercised, e.g., `test_widgets.py` exercises the code in `widgets.py`.
+Integration test module names are more free-form.
+
+Test function names for API routes follow the corresponding route's
+component path names plus the action being tested, e.g.,
+`test_widget_creation` checks the `POST /widget` route.
+
+"""

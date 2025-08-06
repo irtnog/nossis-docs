@@ -1,7 +1,6 @@
-;; nossis-docs, serverless hosting for static, private web sites that
-;; works like GitHub Pages
+;; Nossis Docs, serverless hosting for static, private web sites
 ;;
-;; Copyright (C) 2024  Matthew X. Economou
+;; Copyright (C) 2024-2025  Matthew X. Economou
 ;;
 ;; This program is free software: you can redistribute it and/or
 ;; modify it under the terms of the GNU Affero General Public License

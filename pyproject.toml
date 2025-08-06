@@ -1,5 +1,4 @@
-# nossis-docs, serverless hosting for static, private web sites that
-# works like GitHub Pages
+# Nossis Docs, serverless hosting for static, private web sites
 #
 # Copyright (C) 2024-2025  Matthew X. Economou
 #
@@ -24,7 +23,7 @@ build-backend = "setuptools.build_meta"
 [project]
 # cf. tool.setuptools.package-dir section below
 name = "nossis-docs"
-description = "Serverless hosting for static, private web sites that works like GitHub Pages"
+description = "Serverless hosting for static, private web sites"
 version = "0.0.0"
 # cf. https://www.bitecode.dev/p/relieving-your-python-packaging-pain,
 # https://devguide.python.org/versions/

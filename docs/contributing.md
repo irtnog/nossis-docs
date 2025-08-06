@@ -1,5 +1,4 @@
-% nossis-docs, serverless hosting for static, private web sites that
-% works like GitHub Pages
+% Nossis Docs, serverless hosting for static, private web sites
 %
 % Copyright (C) 2024-2025  Matthew X. Economou
 %
