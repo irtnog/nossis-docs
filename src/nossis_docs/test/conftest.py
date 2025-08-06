@@ -25,11 +25,16 @@ from datetime import UTC, datetime
 
 import boto3
 import pytest
+from _pytest.assertion import truncate
 from faker import Faker
 from moto import mock_aws
 from mypy_boto3_cloudfront import CloudFrontClient
 from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 
+# Increase the long string truncation limit when running pytest in
+# verbose mode; cf. https://stackoverflow.com/a/60321834.
+truncate.DEFAULT_MAX_LINES = 999999
+truncate.DEFAULT_MAX_CHARS = 999999
 
 @pytest.fixture
 def _aws_credentials(socket_disabled: None) -> None:
