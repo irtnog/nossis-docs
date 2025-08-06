@@ -20,6 +20,7 @@
 
 import os
 from datetime import UTC, datetime
+from pathlib import Path
 
 import boto3
 import pytest
@@ -33,6 +34,25 @@ from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 # verbose mode; cf. https://stackoverflow.com/a/60321834.
 truncate.DEFAULT_MAX_LINES = 999999
 truncate.DEFAULT_MAX_CHARS = 999999
+
+
+@pytest.fixture(autouse=True)
+def _cd_tmp_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Run each test in a temporary directory automatically.
+
+    {param}`tmp_path`
+    : A test fixture that creates a temporary directory.
+
+    {param}`monkeypatch`
+    : A test fixture that modifies the run-time environment of the
+      requesting test function.  It undoes the changes after the test
+      function exits.
+
+    For more information, refer to
+    [this StackOverflow answer](https://stackoverflow.com/a/62055409).
+
+    """
+    monkeypatch.chdir(str(tmp_path))
 
 
 @pytest.fixture
