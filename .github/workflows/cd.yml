@@ -1,7 +1,7 @@
 # nossis-docs, serverless hosting for static, private web sites that
 # works like GitHub Pages
 #
-# Copyright (C) 2024  Matthew X. Economou
+# Copyright (C) 2024-2025  Matthew X. Economou
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -67,7 +67,7 @@ jobs:
       # as the Lambda functions' runtimes.
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       # On feature branches, deploy from source to the staging
       # environment.  If necessary, mimic just enough of the release

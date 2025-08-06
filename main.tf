@@ -309,7 +309,7 @@ resource "aws_lambda_function" "invalidate_distribution" {
   filename         = "lambda-functions.zip"
   source_code_hash = filebase64sha256("lambda-functions.zip")
   handler          = "nossis_docs.pipeline.invalidate_distribution"
-  runtime          = "python3.12"
+  runtime          = "python3.13"
   architectures    = [var.LAMBDA_ARCH]
 
   logging_config {

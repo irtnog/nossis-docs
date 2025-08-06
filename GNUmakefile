@@ -1,7 +1,7 @@
 # nossis-docs, serverless hosting for static, private web sites that
 # works like GitHub Pages
 #
-# Copyright (C) 2024  Matthew X. Economou
+# Copyright (C) 2024-2025  Matthew X. Economou
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ $(if $(call pathsearch,.venv/bin,$(1)), \
 
 # Develop using the latest available supported version of Python.
 PYTHON = \
-$(call pathsearch,$(PATH),python3.12 python3.11 python3.10,exit 1; echo python3)
+$(call pathsearch,$(PATH),python3.13 python3.12 python3.11,exit 1; echo python3)
 PYTHON_VERSION = \
 $(shell $(PYTHON) -c "import sys;print('{}.{}'.format(*sys.version_info[:2]))")
 
