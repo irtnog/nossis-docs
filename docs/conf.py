@@ -153,6 +153,7 @@ intersphinx_mapping = {
     "pydata-theme": ("https://pydata-sphinx-theme.readthedocs.io/en/latest/", None),
     "copybutton": ("https://sphinx-copybutton.readthedocs.io/en/latest/", None),
     "smv": ("https://sphinx-contrib.github.io/multiversion/main/", None),
+    "sphinx-design": ("https://sphinx-design.readthedocs.io/en/latest/", None),
     "sphinx-pyscript": ("https://sphinx-pyscript.readthedocs.io/en/latest/", None),
     "sphinx-tippy": ("https://sphinx-tippy.readthedocs.io/en/latest/", None),
     "togglebutton": ("https://sphinx-togglebutton.readthedocs.io/en/latest/", None),
