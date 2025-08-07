@@ -270,3 +270,6 @@ smv_released_pattern = r".*tags.*"
 smv_remote_whitelist = r"^origin$"
 
 smv_prefer_remote_refs = True
+
+viewcode_line_numbers = True
+"""Add line numbers to embedded source code listings."""
