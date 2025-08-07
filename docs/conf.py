@@ -85,61 +85,47 @@ extensions = [
 ]
 """This documentation uses several Sphinx extensions.
 
-{glossary}
 <inv:autodoc2:std:doc#index autodoc2>
 : Generate API documentation automatically.
 
-{glossary}
 <inv:myst:std:doc#index myst-parser>
 : Render Markdown in documentation and docstrings.
 
-{glossary}
 <inv:sphinx:std:doc#usage/extensions/githubpages sphinx.ext.githubpages>
 : Publish HTML documentation in GitHub Pages.
 
-{glossary}
 <inv:sphinx:std:doc#usage/extensions/intersphinx sphinx.ext.intersphinx>
 : Link to other projects' documentation.
 
-{glossary}
 <inv:sphinx:std:doc#usage/extensions/viewcode sphinx.ext.viewcode>
 : Link to highlighted source code.
 
-{glossary}
 <inv:copybutton:std:doc#index sphinx-copybutton>
 : Add a `copy` button to code blocks.
 
-{glossary}
 <inv:sphinx-design:std:doc#index sphinx-design>
 : Provide screen-size responsive web components.
 
-{glossary}
 <inv:smv:std:doc#index sphinx-multiversion>
 : Build versioned documentation.
 
-{glossary}
 <inv:sphinx-pyscript:std:doc#index sphinx-pyscript>
 : Use PyScript in built documentation.
 
-{glossary}
 <inv:sphinx-tippy:std:doc#index sphinx-tippy>
 : Add rich hints (tooltips) to built documentation.
 
-{glossary}
 <inv:togglebutton:std:doc#index sphinx-togglebutton>
 : Add collapsable admonitions (notes, warnings, etc.) to built
   documentation.
 
-{glossary}
 [sphinxcontrib.cairosvgconverter](https://pypi.org/project/sphinxcontrib-svg2pdfconverter/)
 : Convert SVG diagrams to PDF for output formats that do not support
   SVG natively.
 
-{glossary}
 <inv:opengraph:std:doc#index sphinxext-opengraph>
 : Turn web pages into Open Graph objects.
 
-{glossary}
 <inv:rediraffe:std:doc#index sphinxext-rediraffe>
 : Fix broken internal links due to deleted/renamed pages.
 
@@ -245,18 +231,15 @@ html_theme_options = {
 }
 """Configure web content generation.
 
-{glossary}
 <inv:book-theme:std:doc#sections/sidebar-primary home_page_in_toc>
 : Add the home page to the table of contents.
 
-{glossary}
 <inv:book-theme:std:doc#components/source-files repository_url,
 path_to_docs, use_edit_page_button, use_repository_button,
 use_issues_button>
 : Link to doc sources and include buttons for suggesting edits or
   creating new issues.
 
-{glossary}
 <inv:book-theme:std:doc#reference use_fullscreen_button>
 : Add a button to show the site full screen.
 
