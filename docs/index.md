@@ -63,5 +63,5 @@ compatible OpenID Connect (OIDC) identity provider.
 charter
 contributing
 credits
-apidocs/index.rst
+apidocs/index
 ```

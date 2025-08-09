@@ -173,10 +173,9 @@ exclude_patterns = [".*", "Thumbs.db", ".DS_Store"]
 """Ignore these files/folders when sourcing content."""
 
 autodoc2_packages = [
-    {
-        "module": "nossis_docs",
-        "path": str(_srcpath),
-    },
+    {"module": "nossis_docs", "path": "../src/nossis_docs/"},
+    {"module": "tests", "path": "../tests/"},
+    {"module": "docs", "path": "../docs/"},
 ]
 """Search these locations for code to document."""
 
