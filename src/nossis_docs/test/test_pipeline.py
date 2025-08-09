@@ -30,13 +30,15 @@ from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 def test_invalidate_distribution(
     distribution: CreateDistributionResultTypeDef,
 ) -> None:
-    """Simulate a CodePipeline deploy stage signaling Lambda to
-    invalidate paths in a CloudFront distribution.
+    """Simulate a CodePipeline deploy stage.
 
-    :param distribution: A mock CloudFront distribution.
+    It signals the Lambda function to invalidate paths in a CloudFront
+    distribution.
+
+    `distribution`
+    : A mock CloudFront distribution.
 
     """
-
     # To ensure AWS test fixtures get set up BEFORE creating any boto3
     # clients, import the code to be tested at the function level
     # (i.e., here), not at the module level (above).  Otherwise, those
@@ -102,16 +104,20 @@ def test_invalidate_distribution(
     orig_make_api_call = BaseClient._make_api_call
 
     def mock_make_api_call(self: BaseClient, operation_name: str, api_params):
-        """Intercept calls to PutJobFailureResult and
-        PutJobSuccessResult.
+        """Intercept calls to PutJobFailureResult/PutJobSuccessResult.
 
-        :param self: An instance of botocore's AWS API client.
-        :param operation_name: The API being called.
-        :param api_params: Any parameters.
-        :return: The result of the API call.
+        `self`
+        : An instance of botocore's AWS API client.
+
+        `operation_name`
+        : The API being called.
+
+        `api_params`
+        : Any parameters.
+
+        Returns the result of the API call.
 
         """
-
         match operation_name:
             # https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobFailureResult.html
             case "PutJobFailureResult":

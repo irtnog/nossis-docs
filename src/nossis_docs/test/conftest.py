@@ -40,10 +40,10 @@ truncate.DEFAULT_MAX_CHARS = 999999
 def _cd_tmp_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """Run each test in a temporary directory automatically.
 
-    {param}`tmp_path`
+    `tmp_path`
     : A test fixture that creates a temporary directory.
 
-    {param}`monkeypatch`
+    `monkeypatch`
     : A test fixture that modifies the run-time environment of the
       requesting test function.  It undoes the changes after the test
       function exits.
@@ -62,10 +62,10 @@ def _aws_credentials(faker: Faker, socket_disabled: None) -> None:
     This overwrites the relevant process environment variables with
     junk in case the test runner has set them by mistake.
 
-    {param}`faker`
+    `faker`
     : A fake data generator.
 
-    {param}`socket_disabled`
+    `socket_disabled`
     : Disables network access via pytest-socket.
 
     """

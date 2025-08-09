@@ -42,18 +42,21 @@ codepipeline: CodePipelineClient = boto3.client("codepipeline")
 def invalidate_distribution(
     event: CodePipelineJobEvent, context: LambdaContext
 ) -> None:
-    """When triggered by CodePipeline, flush the given CloudFront
-    distribution's cache.
+    """Flush the given CloudFront distribution's cache.
 
-    :param event: A CodePipeline job event;
-        cf. https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html.
-    :param context: The execution context of the Lambda function.
-    :return: None as the Lambda function is invoked asynchronously and
-        updates the calling CodePipeline job's status directly;
-        cf. https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-return.
+    `event`
+    : A CodePipeline job event;
+      cf. https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html.
+
+    `context`
+    : The execution context of the Lambda function.
+
+    As the Lambda function is invoked asynchronously and updates the
+    calling CodePipeline job's status directly, this has no return
+    value;
+    cf. https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-return.
 
     """  # noqa: B950
-
     try:
         # Parse the event data.
         params: dict = event.decoded_user_parameters
