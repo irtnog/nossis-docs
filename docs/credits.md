@@ -51,3 +51,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## [Coding with Thomas](https://www.codingwiththomas.com)
+
+Thomas Sedlmair's article
+["My Sphinx Best Practice Guide for Multi-version Documentation in Different Languages"](https://www.codingwiththomas.com/blog/my-sphinx-best-practice-for-a-multiversion-documentation-in-different-languages)
+inspired this project's versioned documentation build process.

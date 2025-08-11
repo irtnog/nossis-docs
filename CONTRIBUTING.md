@@ -13,12 +13,11 @@ branch before submitting them for review as a
 [GitHub pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
 
 A commit's scope **SHOULD** be the second-level Python module name
-sans the top-level prefix or any suffixes.  For
-[dunder](https://wiki.python.org/moin/DunderAlias) modules, use their
-names sans underscores, e.g., `main` instead of `__main__`.
-Functional test changes should use the scope of the module being
-exercised, while changes to integration tests **MUST NOT** specify a
-scope.
+sans the top-level prefix or any suffixes.  Functional test changes
+should use the scope of the module being exercised, while changes to
+integration tests **MUST NOT** specify a scope.  Changes covering
+multiple scopes or changes not specific to one scope **MUST NOT**
+specify a scope, including changes instigated by code in second-level
+[dunder](https://wiki.python.org/moin/DunderAlias) modules.
 
-
-### [Refer to the developer guidance for more information.](https://irtnog.github.io/nossis-docs/en/latest/contributing.html)
+### [Refer to the developer guidance for more information.](https://irtnog.github.io/nossis-docs/)

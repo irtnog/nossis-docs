@@ -73,7 +73,6 @@ dev = [
     "sphinx-autodoc2[cli]",
     "sphinx-book-theme",
     "sphinx-intl",
-    "sphinx-multiversion @ git+https://github.com/Holzhaus/sphinx-multiversion#egg=sphinx-multiversion",
     "sphobjinv",
     "twine",
     "yapf",

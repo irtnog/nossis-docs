@@ -15,33 +15,31 @@
     You should have received a copy of the GNU Affero General Public
     License along with this program.  If not, see
     <https://www.gnu.org/licenses/>. -#}
-
 {%- if current_version %}
-
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
-    <span class="fa fa-book"> Other Versions</span>
-    v: {{ current_version.name }}
+    Version: {{ current_version }} ({{ current_language }})
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
-    {%- if versions.tags %}
+    {%- if versions[current_version]|length >= 1 %}
     <dl>
-      <dt>Releases</dt>
-      {%- for item in versions.tags %}
-      <dd><a href="{{ item.url }}">{{ item.name }}</a></dd>
+      <dt>{{ _('Languages') }}</dt>
+      {%- for l in versions[current_version]|sort %}
+      <dd><a href="../{{ l }}/index.html">{{ l }}</a></dd>
       {%- endfor %}
     </dl>
     {%- endif %}
-    {%- if versions.branches %}
+    {%- if versions|length >= 1 %}
     <dl>
-      <dt>Development versions</dt>
-      {%- for item in versions.branches %}
-      <dd><a href="{{ item.url }}">{{ item.name }}</a></dd>
+      <dt>{{ _('Versions') }}</dt>
+      {%- for v, ls in versions|items %}
+      <dd><a href="../../{{ v }}/{{ ls[0] }}/index.html">{{ v }}</a></dd>
       {%- endfor %}
     </dl>
     {%- endif %}
+    <br>
+    </dl>
   </div>
 </div>
-
 {%- endif %}

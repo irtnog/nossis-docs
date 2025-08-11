@@ -16,11 +16,13 @@
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
 
-## OpenTofu/Terraform (https://github.com/github/gitignore)
+## GitHub Actions
 
 # Do not store credentials in Git repositories!
 .secrets*
 .vars*
+
+## OpenTofu/Terraform (https://github.com/github/gitignore)
 
 # These are subject to change across environments/deployments and
 # might contain sensitive data (like passwords or shared secrets).
@@ -55,8 +57,7 @@ override.tf.json
 
 ## Python (https://github.com/github/gitignore)
 
-# Virtual environments can be named anything, but these are pretty
-# typical.
+# Virtual environments can be named anything, but these are common.
 .env*
 .venv*
 env*.bak*/

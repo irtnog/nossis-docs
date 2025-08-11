@@ -20,11 +20,9 @@
 # inherited from the environment.
 SHELL = /bin/sh
 
-
 # Explicitly clear and then set the suffixes used in implicit rules.
 .SUFFIXES:
 # .SUFFIXES: .c .o
-
 
 # Search a colon-separated list of directories for one of the given
 # programs, returning the first match.
@@ -35,7 +33,6 @@ $(or \
 			$(wildcard $(addsuffix /$(a), $(subst :, , $(1)))))), \
 	$(3))
 
-
 # Search the Python virtual environment and the executable search path
 # for the programs in the listed order, returning the first match.
 venvsearch = \
@@ -43,23 +40,19 @@ $(if $(call pathsearch,.venv/bin,$(1)), \
 	. .venv/bin/activate; $(1), \
 	$(call pathsearch,$(PATH),$(1),exit 1; echo $(1)))
 
-
 # Develop using the latest available supported version of Python.
 PYTHON = \
 $(call pathsearch,$(PATH),python3.13 python3.12 python3.11,exit 1; echo python3)
 PYTHON_VERSION = \
 $(shell $(PYTHON) -c "import sys;print('{}.{}'.format(*sys.version_info[:2]))")
 
-
 # Use these tools from the development environment, if available.
 PRE_COMMIT  = $(call venvsearch,pre-commit)
 PYTEST      = $(call venvsearch,pytest)
 SPHINXBUILD = $(call venvsearch,sphinx-build)
 SPHINXINTL  = $(call venvsearch,sphinx-intl)
-SPHINXMULTI = $(call venvsearch,sphinx-multiversion)
 TOMLQ       = $(call venvsearch,tomlq)
 YQ          = $(call venvsearch,yq)
-
 
 # On Debian/Ubuntu, install these build dependencies via APT.
 DEBIAN_BUILD_DEPS = \
@@ -69,24 +62,20 @@ DEBIAN_BUILD_DEPS = \
 	python3.13-full \
 	xmlsec1 \
 
-
 # On Debian/Ubuntu, install these Python packages' build dependencies.
 APT_GET_INSTALL = \
 apt-get -o Debug::pkgProblemResolver=yes -y --no-install-recommends install
 DEBIAN_SOURCE_DEPS = \
 	python3-cairosvg \
 
-
 # On macOS, install these build dependencies (formulas) via Homebrew.
 HOMEBREW_FORMULA_BUILD_DEPS = \
 	checkov \
 	tofu \
 
-
 # On macOS, install these build dependencies (casks) via Homebrew.
 HOMEBREW_CASK_BUILD_DEPS = \
 	docker \
-
 
 # On macOS, install these build dependencies via MacPorts.
 MACPORTS_BUILD_DEPS = \
@@ -99,29 +88,23 @@ MACPORTS_BUILD_DEPS = \
 	shellcheck \
 	tflint \
 
-
 # Determine the canonical path to the project's working directory.
 PROJECT_ROOT = $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-
 
 # Get the package name.
 PYPACKAGE_NAME = \
 $(shell $(TOMLQ) -r '.tool.setuptools."package-dir"|keys[0]' pyproject.toml)
-
 
 # Recursively list code, content, and test articles (as well as
 # related work in progress).
 SOURCEISH ?= $(or $(shell git ls-tree --full-tree --name-only -r HEAD src))
 UNTRACKED ?= $(or $(shell git ls-files --others --exclude-standard src))
 
+# Prepare these translations of the documentation.
+TRANSLATIONS =
 
-# Prepare these translations.
-TRANSLATIONS=
-
-
-# Enumerate translation targets.
-LOCALES = $(foreach l,$(TRANSLATIONS),docs/_locales/$(l))
-
+# Configure Sphinx, optionally from an environment variable.
+SPHINXOPTS ?=
 
 # List in-use pre-commit hooks.
 PRE_COMMIT_HOOKS = \
@@ -134,7 +117,6 @@ $(addprefix .git/hooks/, \
 	pre-commit \
 )
 
-
 # When adding an alias for a build artifact, add it to this list; cf.
 # https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html.
 # Sort the list alphabetically.
@@ -144,10 +126,10 @@ $(addprefix .git/hooks/, \
 	clean \
 	clean-deps \
 	coverage \
-	debug \
 	dist \
 	distclean \
 	docs \
+	docsclean \
 	gettext \
 	hash-source-code \
 	html \
@@ -161,10 +143,8 @@ $(addprefix .git/hooks/, \
 	tests \
 	venv \
 
-
 # Set the default target when running `make`.
 all: .coverage
-
 
 # Install build dependencies for local development.
 build-deps:
@@ -193,18 +173,17 @@ build-deps:
 				$(DEBIAN_SOURCE_DEPS); \
 		rm -f *.buildinfo *.changes)
 
-
 # Create the development environment.
 venv .venv:
 	$(PYTHON) -m venv .venv
 	. .venv/bin/activate; python -m pip install -U pip-with-requires-python
 	. .venv/bin/activate; python -m pip install -U pip setuptools
-
+	touch .venv
 
 # Set up the development environment.
 setup $(PYPACKAGE_NAME).egg-info: pyproject.toml .venv
 	. .venv/bin/activate; python -m pip install -e .[dev,test]
-
+	touch $(PYPACKAGE_NAME).egg-info
 
 # Install the pre-commit hooks.
 pre-commit: $(PRE_COMMIT_HOOKS)
@@ -213,37 +192,86 @@ pre-commit: $(PRE_COMMIT_HOOKS)
 	$(PRE_COMMIT) validate-manifest
 	$(PRE_COMMIT) install --install-hooks --hook-type $*
 
-
-# Run the linter (including unstaged changes).
+# Check code syntax and style.
 lint: $(PRE_COMMIT_HOOKS)
 	$(PRE_COMMIT) run --show-diff-on-failure --all-files
 
-
-# Run the test suite.
+# Perform comprehensive functional and integration testing.
 test tests coverage .coverage: $(PYPACKAGE_NAME).egg-info $(SOURCEISH) $(UNTRACKED)
 	$(PYTEST) --cov=$(PYPACKAGE_NAME) $(PYTEST_ARGS)
 
+# Run a shorter, faster subset of the test suite.
 smoke: $(PYPACKAGE_NAME).egg-info
 	$(PYTEST) -m "smoke and not slow" $(PYTEST_ARGS)
 
+# Route these targets to Sphinx using its "make mode" option.
+gettext html: | $(PYPACKAGE_NAME).egg-info
+	$(SPHINXBUILD) -M $@ docs build $(SPHINXOPTS) $(O)
 
-# Generate the documentation.
-docs: $(LOCALES) | $(PYPACKAGE_NAME).egg-info
-	$(foreach l,en $(TRANSLATIONS), \
-		$(SPHINXMULTI) -D language="$(l)" docs build/html/$(l))
-	env LATEST_VERSION=`git describe --tag --abbrev=0` \
-		envsubst < docs/.index.html > build/html/index.html
-
-locale locales: $(LOCALES)
-docs/_locales/%: build/gettext | $(PYPACKAGE_NAME).egg-info
-	mkdir -p $@
+# Prepare or update message catalogs for translation.
+locale locales: $(addprefix docs/_locales/, $(TRANSLATIONS))
+docs/_locales/%: gettext | $(PYPACKAGE_NAME).egg-info
 	$(SPHINXINTL) -c docs/conf.py update -p build -l $*
-	touch $@
 
-gettext build/gettext: | $(PYPACKAGE_NAME).egg-info
-	$(SPHINXBUILD) -b gettext -n docs build $(SPHINXOPTS)
-	touch build/gettext
+# Build the documentation.
+docs: | $(PYPACKAGE_NAME).egg-info
+# Create missing remote-tracking branches.
+	LOCAL_BRANCHES=$$(git branch \
+		| grep -E -v '^..(HEAD|gh-pages|main|master|releases?(/.*)?)$$' \
+		| cut -c 3-); \
+	REMOTE_BRANCHES=$$(git branch -r \
+		| grep -E -v '^.*/(HEAD|gh-pages|main|master|releases?(/.*)?)$$' \
+		| cut -c 3-); \
+	for rb in $$REMOTE_BRANCHES; do \
+		lb=`echo $$rb | sed -e 's|[^/]*/||'`; \
+		echo "$$LOCAL_BRANCHES" | grep ^$$lb\$$ > /dev/null \
+		|| git branch $$lb $$rb; \
+	done
+# Generate the index.
+	mkdir -p build
+	cat /dev/null > build/versions.txt
+	VERSIONS=$$(git tag | sort -r; git branch \
+		| grep -E -v '^..(HEAD|gh-pages|main|master|releases?(/.*)?)$$' \
+		| cut -c 3-); \
+	CURRENT_VERSION=$$(echo $$VERSIONS | head -1); \
+	for v in $$VERSIONS; do \
+		TRANSLATIONS=$$( \
+			echo en; \
+			git ls-tree -r --name-only $$v docs/_locales \
+			| xargs -n 1 basename \
+			| grep -v '^.gitignore$$' \
+		); \
+		echo { \"$$v\": $$(echo "$$TRANSLATIONS" | jq -cRn '[inputs]') } \
+		>> build/versions.txt; \
+	done
+	cat build/versions.txt | jq -s add > build/versions.json
+# Copy the repository to a temporary directory.  Stash the Sphinx
+# configuration from the real work tree for later use.
+	$(eval TMP := $(shell mktemp -d))
+	git clone --mirror . $(TMP)/.git
+	mkdir -p $(TMP)/build/docs
+	cp build/versions.json docs/conf.py docs/_templates/versions.html \
+		$(TMP)/build
+# Build the documentation for each translation of each version.
+	. .venv/bin/activate; \
+	cd $(TMP); \
+	for v in $$(jq -r 'keys[]' build/versions.json); do \
+		env GIT_WORK_TREE=$(TMP) git checkout -f $$v; \
+		cp build/conf.py docs/conf.py; \
+		cp build/versions.html docs/_templates/versions.html; \
+		for l in $$(jq -r --arg v $$v '.[$$v][]' build/versions.json); do \
+			env CURRENT_VERSION=$$v CURRENT_LANGUAGE=$$l \
+				sphinx-build -M html docs build -D language=$$l; \
+			mkdir -p build/docs/$$v; \
+			mv build/html build/docs/$$v/$$l; \
+		done; \
+	done
+	(cd $(TMP)/build; tar cf - docs) | (cd build; tar xf -)
+# Clean up.
+	rm -rf $(TMP)
 
+docsclean:
+	rm -rf docs/apidocs build/{docs,gettext,html} build/versions*
 
 # Build the distribution.
 dist: .coverage
@@ -254,21 +282,19 @@ dist: .coverage
 		echo "file://localhost$(PROJECT_ROOT)$(wildcard dist/*.whl)" \
 			>> requirements.txt \
 	)
-	. .venv/bin/activate; pip install --no-compile --target dist-lambda -r requirements.txt
+	. .venv/bin/activate; pip install --no-compile --target dist-lambda \
+		-r requirements.txt
 	find dist-lambda -exec touch -t 198001010000.00 '{}' \;
 
 distclean:
 	rm -rf dist* requirements.txt
 
-
 # Remove build artifacts and reset the development environment.
-clean: distclean
-	rm -rf build* .coverage .pytest_cache .venv* docs/apidocs \
-		docs/_locales/en $(PRE_COMMIT_HOOKS)
+clean: docsclean distclean
+	rm -rf build* .coverage .pytest_cache .venv* $(PRE_COMMIT_HOOKS)
 	find . -type d -name __pycache__ -print | xargs rm -rf
 	find . -type d -name .external_modules -print | xargs rm -rf
 	find . -type d -name \*.egg-info -print | xargs rm -rf
-
 
 # This could remove packages other that the ones listed, so keep any
 # confirmation prompts (requires local administrator rights).
@@ -286,7 +312,6 @@ clean-deps:
 			$(addsuffix -build-deps, $(DEBIAN_SOURCE_DEPS)) \
 		; \
 		sudo apt-get autoremove)
-
 
 # Fingerprint the source code.  Run this in a fresh clone of the
 # repository.  Refer to the Continuous Integration workflow

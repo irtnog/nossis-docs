@@ -31,6 +31,8 @@ Some neat tricks not referenced elsewhere:
 
 """
 
+import json
+import os
 import sys
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
@@ -41,8 +43,7 @@ import sphinx_book_theme
 _srcpath = (Path(__file__).parent / ".." / "src").absolute()
 sys.path.insert(0, str(_srcpath))
 
-# Purge old imports in an attempt to hack around sphinx-multiversion's
-# global environment.
+# Purge old imports just in case.
 _removals = [_mod for _mod in sys.modules if "nossis_docs" in _mod]
 for _mod in _removals:
     del sys.modules[_mod]
@@ -75,7 +76,6 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinx_multiversion",
     "sphinx_pyscript",
     "sphinx_tippy",
     "sphinx_togglebutton",
@@ -106,9 +106,6 @@ extensions = [
 <inv:sphinx-design:std:doc#index sphinx-design>
 : Provide screen-size responsive web components.
 
-<inv:smv:std:doc#index sphinx-multiversion>
-: Build versioned documentation.
-
 <inv:sphinx-pyscript:std:doc#index sphinx-pyscript>
 : Use PyScript in built documentation.
 
@@ -138,7 +135,6 @@ intersphinx_mapping = {
     "book-theme": ("https://sphinx-book-theme.readthedocs.io/en/stable/", None),
     "pydata-theme": ("https://pydata-sphinx-theme.readthedocs.io/en/latest/", None),
     "copybutton": ("https://sphinx-copybutton.readthedocs.io/en/latest/", None),
-    "smv": ("https://sphinx-contrib.github.io/multiversion/main/", None),
     "sphinx-design": ("https://sphinx-design.readthedocs.io/en/latest/", None),
     "sphinx-pyscript": ("https://sphinx-pyscript.readthedocs.io/en/latest/", None),
     "sphinx-tippy": ("https://sphinx-tippy.readthedocs.io/en/latest/", None),
@@ -258,17 +254,17 @@ html_sidebars = {
     ]
 }
 
-smv_branch_whitelist = r"^(?!(gh-pages$|main$|master$|releases?(/.*)?$)).*$"
-"""Generate documentation for feature branches."""
-
-smv_tag_whitelist = r"^v\d+\.\d+\.\d+$"
-"""Generate documentation for tagged releases."""
-
-smv_released_pattern = r".*tags.*"
-
-smv_remote_whitelist = r"^origin$"
-
-smv_prefer_remote_refs = True
+try:
+    _versions = json.load(
+        (Path(__file__).parent / ".." / "build" / "versions.json").open()
+    )
+except Exception:
+    _versions = {"latest": ["en"]}
+html_context = {
+    "current_version": os.environ.get("CURRENT_VERSION", "latest"),
+    "current_language": os.environ.get("CURRENT_LANGUAGE", "en"),
+    "versions": _versions,
+}
 
 viewcode_line_numbers = True
 """Add line numbers to embedded source code listings."""

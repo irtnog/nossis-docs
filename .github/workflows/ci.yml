@@ -62,6 +62,8 @@ jobs:
     outputs:
       source-hash: ${{ steps.hash-source-code.outputs.hash }}
 
+  # Double-check code syntax/style.  This ought to happen in a
+  # pre-commit hook, but not everyone may have that installed.
   lint:
     needs: setup
     runs-on: ubuntu-latest
@@ -70,7 +72,6 @@ jobs:
         with:
           key: workdir-${{ github.sha }}
           path: .
-
       # Use the oldest supported version of Python when linting to
       # catch forward compatibility issues.  Keep this in sync with
       # the freeze, test-matrix, build-matrix, and docs jobs;
@@ -79,7 +80,6 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
-
       # Install additional linter dependencies here.
       - uses: opentofu/setup-opentofu@v1.0.2
       - run: |
@@ -88,9 +88,6 @@ jobs:
       - run: pip install checkov
       - uses: terraform-linters/setup-tflint@v4
       - uses: aquasecurity/setup-trivy@v0.2.0
-
-      # Double-check code syntax/style.  This ought to happen in a
-      # pre-commit hook, but not everyone may have that installed.
       - uses: pre-commit/action@v3.0.1
 
   # Make builds reproducible by pinning every dependency as of this
