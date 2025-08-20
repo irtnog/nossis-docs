@@ -29,6 +29,7 @@ extend-ignore =
     FI10, FI11, FI12, FI13, FI14, FI15, FI16, FI17, FI18,
     # Test code uses assertions by design.
     S101,
+known_modules = pyhumps:[humps]
 
 # Local Variables:
 # mode: conf-unix

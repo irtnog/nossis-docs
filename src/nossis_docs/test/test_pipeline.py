@@ -16,41 +16,40 @@
 # License along with this program.  If not, see
 # <https://www.gnu.org/licenses/>.
 
+"""Check content update handling."""
+
 import json
+import os
+from dataclasses import dataclass
 from unittest.mock import patch
 
 import pytest
 from aws_lambda_powertools.utilities.data_classes import CodePipelineJobEvent
-from aws_lambda_powertools.utilities.typing import LambdaContext
 from botocore.client import BaseClient
+from faker import Faker
 from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 
+from ..pipeline import invalidate_distribution
 
-@pytest.mark.smoke
-def test_invalidate_distribution(
+
+@pytest.fixture
+def content_update_event(
     distribution: CreateDistributionResultTypeDef,
-) -> None:
-    """Simulate a CodePipeline deploy stage.
+) -> CodePipelineJobEvent:
+    """Simulate a web site content update event.
 
-    It signals the Lambda function to invalidate paths in a CloudFront
-    distribution.
+    This event contains the data
+    [CodePipeline includes when invoking a Lambda function](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html)
+    after an update to a GitHub repository's `gh-pages` branch.
 
     `distribution`
-    : A mock CloudFront distribution.
 
-    """
-    # To ensure AWS test fixtures get set up BEFORE creating any boto3
-    # clients, import the code to be tested at the function level
-    # (i.e., here), not at the module level (above).  Otherwise, those
-    # boto3 clients may not use the test fixtures and could
-    # potentially alter real AWS infrastructure.
-    from nossis_docs.pipeline import invalidate_distribution
-
-    # https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html#action-reference-Lambda-event
-    event = CodePipelineJobEvent(
+    """  # noqa: B950
+    distribution_id = distribution["Distribution"]["Id"]
+    return CodePipelineJobEvent(
         {
             "CodePipeline.job": {
-                "id": (job_id := "11111111-abcd-1111-abcd-111111abcdef"),
+                "id": "11111111-abcd-1111-abcd-111111abcdef",
                 "accountId": "111111111111",
                 "data": {
                     "actionConfiguration": {
@@ -58,9 +57,7 @@ def test_invalidate_distribution(
                             "FunctionName": "MyLambdaFunction",
                             "UserParameters": json.dumps(
                                 {
-                                    "distribution_id": distribution["Distribution"][
-                                        "Id"
-                                    ],
+                                    "distribution_id": distribution_id,
                                     "object_paths": ["/test-project/*"],
                                 }
                             ),
@@ -97,14 +94,72 @@ def test_invalidate_distribution(
             }
         }
     )
-    context = LambdaContext()
 
-    # Moto hasn't implemented CloudFront's PutJobFailureResult and
-    # PutJobSuccessResult API calls, so patch them here.
+
+@dataclass
+class _LambdaContext:
+    """A minimal (fake) Lambda execution context."""
+
+    aws_request_id: str
+    """Identify the invocation request."""
+
+    function_name: str
+    """Name the Lambda function."""
+
+    invoked_function_arn: str
+    """Provide the Amazon Resource Name (ARN) used to invoke the
+    function."""
+
+    memory_limit_in_mb: int = 128
+    """Report the amount of memory allocated for the function."""
+
+
+@pytest.fixture
+def lambda_context(_aws_credentials: None, faker: Faker) -> _LambdaContext:
+    """Mock up a Lambda function's execution context.
+
+    `_aws_credentials`
+    : Sets fake AWS credentials when referenced.  These provide the
+      minimum information necessary for aws_lambda_powertools.Logger
+      to work.
+
+    `faker`
+    : A fake data generator.
+
+    """
+    aws_region = os.environ["AWS_DEFAULT_REGION"]
+    aws_account = faker.numerify("%###########")
+    fn_name = faker.slug().replace("-", "_")
+    fn_arn = f"arn:aws:lambda:{aws_region}:{aws_account}:function:{fn_name}"
+    return _LambdaContext(faker.uuid4(), fn_name, fn_arn)
+
+
+@pytest.mark.smoke
+def test_invalidate_distribution(
+    content_update_event: CodePipelineJobEvent, lambda_context: _LambdaContext
+) -> None:
+    """Simulate a CodePipeline deploy stage.
+
+    The test signals the Lambda function to invalidate paths in a
+    CloudFront distribution.
+
+    `content_update_event`
+    : A mock CodePipeline job event.
+
+    `lambda_context`
+    : Mock Lambda execution context.
+
+    """
     orig_make_api_call = BaseClient._make_api_call
 
     def mock_make_api_call(self: BaseClient, operation_name: str, api_params):
         """Intercept calls to PutJobFailureResult/PutJobSuccessResult.
+
+        At the time this was written, Moto hadn't implemented the
+        [PutJobFailureResult](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobFailureResult.html)
+        and
+        [PutJobSuccessResult](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobSuccessResult.html)
+        API calls, so this test patches them itself.
 
         `self`
         : An instance of botocore's AWS API client.
@@ -119,13 +174,11 @@ def test_invalidate_distribution(
 
         """
         match operation_name:
-            # https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobFailureResult.html
             case "PutJobFailureResult":
                 raise AssertionError()
                 return
-            # https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_PutJobSuccessResult.html
             case "PutJobSuccessResult":
-                assert api_params["jobId"] == job_id
+                assert api_params["jobId"] == content_update_event.get_id
                 return
 
         # Fall through to the original _make_api_call function (well,
@@ -133,4 +186,4 @@ def test_invalidate_distribution(
         return orig_make_api_call(self, operation_name, api_params)
 
     with patch("botocore.client.BaseClient._make_api_call", new=mock_make_api_call):
-        invalidate_distribution(event, context)
+        invalidate_distribution(content_update_event, lambda_context)

@@ -43,9 +43,11 @@ dependencies = [
     "aws-lambda-powertools[tracer] @ git+https://github.com/xenophonf/powertools-lambda-python#egg=aws-lambda-powertools",
     "boto3",
     "boto3-stubs[boto3,cloudfront,codepipeline]",
+    "botocore",
     "idpyoidc",
     "mypy-boto3-cloudfront",
     "mypy-boto3-codepipeline",
+    "pyhumps",
 ]
 
 [project.license]

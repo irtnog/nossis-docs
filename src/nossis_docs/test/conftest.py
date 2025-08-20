@@ -94,11 +94,10 @@ def _aws_credentials(faker: Faker, socket_disabled: None) -> None:
 def cloudfront(_aws_credentials: None) -> CloudFrontClient:
     """Mock up a CloudFront client.
 
-    :param _aws_credentials: Blocks access to real AWS resources.
-    :return: A CloudFront client connected to a mock AWS account.
+    `_aws_credentials`
+    : Sets fake AWS credentials when referenced.
 
     """
-
     with mock_aws():
         yield boto3.client("cloudfront")
 
@@ -109,19 +108,17 @@ def distribution(
 ) -> CreateDistributionResultTypeDef:
     """Mock up a CloudFront distribution.
 
-    :param faker: A fake data generator.
-    :param cloudfront: A CloudFront client connected to a mock AWS
-        account.
-    :return: Information about the CloudFront distribution.
+    `faker`
+    : A fake data generator.
+
+    `cloudfront`
+    : A CloudFront client connected to a mock AWS account.
 
     """
-
-    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloudfront/client/create_distribution.html
     return cloudfront.create_distribution(
         DistributionConfig={
             "CallerReference": datetime.now(UTC).isoformat(),
             "DefaultRootObject": "index.html",
-            # TODO: Get content from a mock S3 bucket.
             "Origins": {
                 "Quantity": 1,
                 "Items": [
