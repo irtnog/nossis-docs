@@ -19,17 +19,15 @@
 """Check content update handling."""
 
 import json
-import os
-from dataclasses import dataclass
 from unittest.mock import patch
 
 import pytest
 from aws_lambda_powertools.utilities.data_classes import CodePipelineJobEvent
 from botocore.client import BaseClient
-from faker import Faker
 from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 
 from ..pipeline import invalidate_distribution
+from .helpers import _LambdaContext
 
 
 @pytest.fixture
@@ -96,52 +94,14 @@ def content_update_event(
     )
 
 
-@dataclass
-class _LambdaContext:
-    """A minimal (fake) Lambda execution context."""
-
-    aws_request_id: str
-    """Identify the invocation request."""
-
-    function_name: str
-    """Name the Lambda function."""
-
-    invoked_function_arn: str
-    """Provide the Amazon Resource Name (ARN) used to invoke the
-    function."""
-
-    memory_limit_in_mb: int = 128
-    """Report the amount of memory allocated for the function."""
-
-
-@pytest.fixture
-def lambda_context(_aws_credentials: None, faker: Faker) -> _LambdaContext:
-    """Mock up a Lambda function's execution context.
-
-    `_aws_credentials`
-    : Sets fake AWS credentials when referenced.  These provide the
-      minimum information necessary for aws_lambda_powertools.Logger
-      to work.
-
-    `faker`
-    : A fake data generator.
-
-    """
-    aws_region = os.environ["AWS_DEFAULT_REGION"]
-    aws_account = faker.numerify("%###########")
-    fn_name = faker.slug().replace("-", "_")
-    fn_arn = f"arn:aws:lambda:{aws_region}:{aws_account}:function:{fn_name}"
-    return _LambdaContext(faker.uuid4(), fn_name, fn_arn)
-
-
 @pytest.mark.smoke
-def test_invalidate_distribution(
+def test_cache_invalidation(
     content_update_event: CodePipelineJobEvent, lambda_context: _LambdaContext
 ) -> None:
     """Simulate a CodePipeline deploy stage.
 
-    The test signals the Lambda function to invalidate paths in a
-    CloudFront distribution.
+    The test signals a Lambda function to remove outdated content from
+    a CloudFront distribution's cache.
 
     `content_update_event`
     : A mock CodePipeline job event.

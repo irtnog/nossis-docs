@@ -30,6 +30,8 @@ from moto import mock_aws
 from mypy_boto3_cloudfront import CloudFrontClient
 from mypy_boto3_cloudfront.type_defs import CreateDistributionResultTypeDef
 
+from .helpers import _LambdaContext
+
 # Increase the long string truncation limit when running pytest in
 # verbose mode; cf. https://stackoverflow.com/a/60321834.
 truncate.DEFAULT_MAX_LINES = 999999
@@ -88,6 +90,26 @@ def _aws_credentials(faker: Faker, socket_disabled: None) -> None:
     del os.environ["AWS_PROFILE"]
 
     os.environ["MOTO_ALLOW_NONEXISTENT_REGION"] = "True"
+
+
+@pytest.fixture
+def lambda_context(_aws_credentials: None, faker: Faker) -> _LambdaContext:
+    """Mock up a Lambda function's execution context.
+
+    `_aws_credentials`
+    : Sets fake AWS credentials when referenced.  These provide the
+      minimum information necessary for aws_lambda_powertools.Logger
+      to work.
+
+    `faker`
+    : A fake data generator.
+
+    """
+    aws_region = os.environ["AWS_DEFAULT_REGION"]
+    aws_account = faker.numerify("%###########")
+    fn_name = faker.slug().replace("-", "_")
+    fn_arn = f"arn:aws:lambda:{aws_region}:{aws_account}:function:{fn_name}"
+    return _LambdaContext(faker.uuid4(), fn_name, fn_arn)
 
 
 @pytest.fixture
