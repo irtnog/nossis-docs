@@ -150,12 +150,3 @@ variable "stack_name" {
   type        = string
   nullable    = false
 }
-
-variable "tags_all" {
-  description = <<-EOT
-    Apply these AWS metadata tags to all resources (JSON mapping tag
-    names to values).
-    EOT
-  type        = string
-  default     = "{}"
-}
